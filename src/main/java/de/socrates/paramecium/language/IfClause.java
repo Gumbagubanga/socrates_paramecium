@@ -15,6 +15,10 @@ public class IfClause implements Statement {
         this.statement = statement;
     }
 
+    public static Statement random(Statement randomSimpleStatement) {
+        return new IfClause(Direction.random(), Environment.random(), randomSimpleStatement);
+    }
+
     @Override
     public void execute(Paramecium paramecium) {
         if (paramecium.sense(direction) == sense) {

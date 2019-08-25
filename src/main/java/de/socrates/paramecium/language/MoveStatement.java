@@ -10,6 +10,10 @@ public class MoveStatement implements Statement {
         this.direction = direction;
     }
 
+    public static Statement random() {
+        return new MoveStatement(Direction.random());
+    }
+
     @Override
     public void execute(Paramecium paramecium) {
         paramecium.move(direction);

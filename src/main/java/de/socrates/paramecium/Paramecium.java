@@ -37,6 +37,6 @@ public class Paramecium {
 
     @Override
     public String toString() {
-        return String.format("Health %3d\n%s\n", health, world.toString());
+        return String.format("Health %3d", health);
     }
 }

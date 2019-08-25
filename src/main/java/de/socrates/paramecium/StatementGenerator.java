@@ -6,8 +6,6 @@ import de.socrates.paramecium.language.IfClause;
 import de.socrates.paramecium.language.MoveStatement;
 import de.socrates.paramecium.language.NopStatement;
 import de.socrates.paramecium.language.Statement;
-import de.socrates.paramecium.language.types.Direction;
-import de.socrates.paramecium.language.types.Environment;
 
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -18,14 +16,14 @@ public class StatementGenerator {
     public static final int PROGRAM_SIZE = 20;
 
     private static final Map<Integer, Supplier<Statement>> SIMPLE_SUPPLIER_MAP = Map.of(
-            0, StatementGenerator::generateNopStatement,
-            1, StatementGenerator::generateEatStatement,
-            2, StatementGenerator::generateMoveStatement);
+            0, NopStatement::new,
+            1, EatStatement::new,
+            2, MoveStatement::random);
 
     private static final Map<Integer, Supplier<Statement>> SUPPLIER_MAP = Map.of(
-            0, StatementGenerator::generateNopStatement,
-            1, StatementGenerator::generateEatStatement,
-            2, StatementGenerator::generateMoveStatement,
+            0, NopStatement::new,
+            1, EatStatement::new,
+            2, MoveStatement::random,
             3, StatementGenerator::generateGotoStatement,
             4, StatementGenerator::generateIfClause);
 
@@ -35,42 +33,18 @@ public class StatementGenerator {
         return SUPPLIER_MAP.get(element).get();
     }
 
-    static Statement generateNopStatement() {
-        return new NopStatement();
-    }
-
-    static Statement generateEatStatement() {
-        return new EatStatement();
-    }
-
-    static Statement generateMoveStatement() {
-        return new MoveStatement(randomDirection());
-    }
-
     static Statement generateGotoStatement() {
         return new GotoStatement(randomLineNumber());
     }
 
     static Statement generateIfClause() {
-        return new IfClause(randomDirection(), randomSense(), randomSimpleStatement());
+        return IfClause.random(randomSimpleStatement());
     }
 
     private static Statement randomSimpleStatement() {
         int element = ThreadLocalRandom.current().nextInt(0, SIMPLE_SUPPLIER_MAP.size());
 
         return SIMPLE_SUPPLIER_MAP.get(element).get();
-    }
-
-    private static Direction randomDirection() {
-        int element = ThreadLocalRandom.current().nextInt(0, Direction.values().length);
-
-        return Direction.values()[element];
-    }
-
-    private static Environment randomSense() {
-        int element = ThreadLocalRandom.current().nextInt(0, Environment.values().length);
-
-        return Environment.values()[element];
     }
 
     private static int randomLineNumber() {

@@ -21,4 +21,10 @@ class ParameciumTest {
         Assertions.assertFalse(paramecium.isAlive());
     }
 
+    @Test
+    void print() {
+        Paramecium paramecium = new Paramecium(100, null);
+
+        Assertions.assertEquals("Health 100", paramecium.toString());
+    }
 }

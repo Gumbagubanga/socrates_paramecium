@@ -18,17 +18,17 @@ class ProgramGeneratorTest {
 
     @Test
     void nop_statement_generator() {
-        Assertions.assertTrue(StatementGenerator.generateNopStatement().getClass().isAssignableFrom(NopStatement.class));
+        Assertions.assertTrue(((Statement) new NopStatement()).getClass().isAssignableFrom(NopStatement.class));
     }
 
     @Test
     void eat_statement_generator() {
-        Assertions.assertTrue(StatementGenerator.generateEatStatement().getClass().isAssignableFrom(EatStatement.class));
+        Assertions.assertTrue(((Statement) new EatStatement()).getClass().isAssignableFrom(EatStatement.class));
     }
 
     @Test
     void move_statement_generator() {
-        Assertions.assertTrue(StatementGenerator.generateMoveStatement().getClass().isAssignableFrom(MoveStatement.class));
+        Assertions.assertTrue(MoveStatement.random().getClass().isAssignableFrom(MoveStatement.class));
     }
 
     @Test
