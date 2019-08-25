@@ -1,11 +1,11 @@
 package de.socrates.paramecium.language;
 
-import de.socrates.paramecium.Bacteria;
+import de.socrates.paramecium.Paramecium;
 
 public class EatStatement implements Statement {
 
     @Override
-    public void execute(Bacteria paramecium) {
+    public void execute(Paramecium paramecium) {
         paramecium.eat(3);
     }
 

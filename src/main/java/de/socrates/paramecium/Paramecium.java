@@ -5,14 +5,14 @@ import de.socrates.paramecium.language.types.Sense;
 
 import java.util.Map;
 
-public class Bacteria {
+public class Paramecium {
     private final World world;
 
     private int health;
     private int xPosition;
     private int yPosition;
 
-    public Bacteria(World world, int health, int xPosition, int yPosition) {
+    public Paramecium(World world, int health, int xPosition, int yPosition) {
         this.world = world;
         this.health = health;
         this.xPosition = xPosition;

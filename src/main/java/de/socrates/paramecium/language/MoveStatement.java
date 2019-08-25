@@ -1,6 +1,6 @@
 package de.socrates.paramecium.language;
 
-import de.socrates.paramecium.Bacteria;
+import de.socrates.paramecium.Paramecium;
 import de.socrates.paramecium.language.types.Direction;
 
 public class MoveStatement implements Statement {
@@ -11,7 +11,7 @@ public class MoveStatement implements Statement {
     }
 
     @Override
-    public void execute(Bacteria paramecium) {
+    public void execute(Paramecium paramecium) {
         paramecium.move(direction);
     }
 

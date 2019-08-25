@@ -1,13 +1,13 @@
 package de.socrates.paramecium.language;
 
-import de.socrates.paramecium.Bacteria;
+import de.socrates.paramecium.Paramecium;
 
 public interface Statement {
 
-    default void execute(Bacteria paramecium) {
+    default void execute(Paramecium paramecium) {
     }
 
-    default void exhaust(Bacteria paramecium) {
+    default void exhaust(Paramecium paramecium) {
         paramecium.exhaust(1);
     }
 

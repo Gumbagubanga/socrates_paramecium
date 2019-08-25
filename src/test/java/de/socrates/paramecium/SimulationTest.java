@@ -53,7 +53,7 @@ public class SimulationTest {
 
     private static Program executeProgram(Program program) {
         World world = World.generate();
-        program.execute(new Bacteria(world, 10, 1, 1));
+        program.execute(new Paramecium(world, 10, 1, 1));
         return program;
     }
 
@@ -74,6 +74,6 @@ public class SimulationTest {
         System.out.println();
 
         World world = World.generate();
-        program.execute(new Bacteria(world, 10, 1, 1));
+        program.execute(new Paramecium(world, 10, 1, 1));
     }
 }

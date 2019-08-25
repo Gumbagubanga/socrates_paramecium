@@ -21,7 +21,7 @@ public class Program {
         program.add(statement);
     }
 
-    public void execute(Bacteria paramecium) {
+    public void execute(Paramecium paramecium) {
         while (paramecium.isAlive() && hasNextAction()) {
             Statement action = nextAction(programCounter);
 

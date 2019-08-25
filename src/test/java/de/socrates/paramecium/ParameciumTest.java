@@ -5,18 +5,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
 
 @Testable
-class BacteriaTest {
+class ParameciumTest {
 
     @Test
     void positive_health() {
-        Bacteria paramecium = new Bacteria(null, 1, 0, 0);
+        Paramecium paramecium = new Paramecium(null, 1, 0, 0);
 
         Assertions.assertTrue(paramecium.isAlive());
     }
 
     @Test
     void zero_health() {
-        Bacteria paramecium = new Bacteria(null, 0, 0, 0);
+        Paramecium paramecium = new Paramecium(null, 0, 0, 0);
 
         Assertions.assertFalse(paramecium.isAlive());
     }

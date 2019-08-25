@@ -1,6 +1,6 @@
 package de.socrates.paramecium.language;
 
-import de.socrates.paramecium.Bacteria;
+import de.socrates.paramecium.Paramecium;
 import de.socrates.paramecium.language.types.Direction;
 import de.socrates.paramecium.language.types.Sense;
 
@@ -16,7 +16,7 @@ public class IfClause implements Statement {
     }
 
     @Override
-    public void execute(Bacteria paramecium) {
+    public void execute(Paramecium paramecium) {
         if (paramecium.sense(direction) == sense) {
             statement.execute(paramecium);
             statement.exhaust(paramecium);
