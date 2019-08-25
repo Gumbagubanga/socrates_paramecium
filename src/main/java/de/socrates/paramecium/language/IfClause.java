@@ -4,18 +4,18 @@ import de.socrates.paramecium.Paramecium;
 import de.socrates.paramecium.language.types.Direction;
 import de.socrates.paramecium.language.types.Environment;
 
-public class IfClause implements Statement {
+public class IfClause implements Instruction {
     private final Direction direction;
     private final Environment sense;
-    private final Statement statement;
+    private final Instruction statement;
 
-    public IfClause(Direction direction, Environment sense, Statement statement) {
+    public IfClause(Direction direction, Environment sense, Instruction statement) {
         this.direction = direction;
         this.sense = sense;
         this.statement = statement;
     }
 
-    public static Statement random(Statement randomSimpleStatement) {
+    public static Instruction random(Instruction randomSimpleStatement) {
         return new IfClause(Direction.random(), Environment.random(), randomSimpleStatement);
     }
 
@@ -23,8 +23,9 @@ public class IfClause implements Statement {
     public void execute(Paramecium paramecium) {
         if (paramecium.sense(direction) == sense) {
             statement.execute(paramecium);
-            statement.exhaust(paramecium);
         }
+
+        paramecium.exhaust(1);
     }
 
     @Override

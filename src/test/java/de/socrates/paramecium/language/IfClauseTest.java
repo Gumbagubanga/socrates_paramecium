@@ -12,16 +12,16 @@ class IfClauseTest {
 
     @Test
     void if_wall() {
-        Assertions.assertEquals("if(sense(NORTH) == WALL) then eat()", ((Statement) new IfClause(Direction.NORTH, Environment.WALL, new EatStatement())).toString());
+        Assertions.assertEquals("if(sense(NORTH) == WALL) then eat()", ((Instruction) new IfClause(Direction.NORTH, Environment.WALL, new EatInstruction())).toString());
     }
 
     @Test
     void if_empty() {
-        Assertions.assertEquals("if(sense(SOUTH) == EMPTY) then goto(10)", ((Statement) new IfClause(Direction.SOUTH, Environment.EMPTY, new GotoStatement(10))).toString());
+        Assertions.assertEquals("if(sense(SOUTH) == EMPTY) then goto(10)", ((Instruction) new IfClause(Direction.SOUTH, Environment.EMPTY, new GotoInstruction(10))).toString());
     }
 
     @Test
     void if_food() {
-        Assertions.assertEquals("if(sense(WEST) == FOOD) then nop()", ((Statement) new IfClause(Direction.WEST, Environment.FOOD, new NopStatement())).toString());
+        Assertions.assertEquals("if(sense(WEST) == FOOD) then nop()", ((Instruction) new IfClause(Direction.WEST, Environment.FOOD, new NopInstruction())).toString());
     }
 }

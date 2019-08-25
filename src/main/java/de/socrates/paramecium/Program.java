@@ -1,6 +1,6 @@
 package de.socrates.paramecium;
 
-import de.socrates.paramecium.language.Statement;
+import de.socrates.paramecium.language.Instruction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,41 +10,41 @@ import java.util.stream.IntStream;
 
 public class Program {
 
-    private List<Statement> program;
+    private final List<Instruction> code;
 
     Program() {
         this(new ArrayList<>());
     }
 
-    private Program(List<Statement> program) {
-        this.program = program;
+    Program(List<Instruction> code) {
+        this.code = code;
     }
 
-    void write(Statement statement) {
-        program.add(statement);
+    void write(Instruction statement) {
+        code.add(statement);
     }
 
-    Statement read(int line) {
-        return program.stream().skip(line).findFirst().orElse(null);
+    Instruction read(int line) {
+        return code.stream().skip(line).findFirst().orElse(null);
     }
 
     Program singleMutation() {
-        List<Statement> mutatedProgram = program.stream()
+        List<Instruction> mutatedProgram = code.stream()
                 .map(Program::lineMutation)
                 .collect(Collectors.toList());
 
         return new Program(mutatedProgram);
     }
 
-    private static Statement lineMutation(Statement statement) {
+    private static Instruction lineMutation(Instruction statement) {
         boolean isMutated = ThreadLocalRandom.current().nextInt(0, 20) == 0;
-        return isMutated ? StatementGenerator.randomStatement() : statement;
+        return isMutated ? ProgramGenerator.randomStatement() : statement;
     }
 
     @Override
     public String toString() {
-        return IntStream.range(0, program.size())
-                .mapToObj(i -> String.format("%2d %s", i, program.get(i).toString()))
+        return IntStream.range(0, code.size())
+                .mapToObj(i -> String.format("%2d %s", i, code.get(i).toString()))
                 .collect(Collectors.joining("\n"));
     }
 }

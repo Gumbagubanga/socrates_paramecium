@@ -1,7 +1,7 @@
 package de.socrates.paramecium;
 
-import de.socrates.paramecium.language.GotoStatement;
-import de.socrates.paramecium.language.Statement;
+import de.socrates.paramecium.language.GotoInstruction;
+import de.socrates.paramecium.language.Instruction;
 
 class ProgramRunner {
 
@@ -20,11 +20,10 @@ class ProgramRunner {
     }
 
     void execute(Paramecium paramecium) {
-        Statement action;
+        Instruction action;
 
         while (paramecium.isAlive() && (action = program.read(programCounter)) != null) {
             action.execute(paramecium);
-            action.exhaust(paramecium);
 
             printDebug(paramecium, action);
 
@@ -32,16 +31,16 @@ class ProgramRunner {
         }
     }
 
-    private void printDebug(Paramecium paramecium, Statement action) {
+    private void printDebug(Paramecium paramecium, Instruction action) {
         if (debug) {
             System.out.println(action.toString());
             System.out.println(paramecium.toString());
         }
     }
 
-    private void updateProgramCounter(Statement action) {
-        if (action instanceof GotoStatement) {
-            this.programCounter = ((GotoStatement) action).getLine();
+    private void updateProgramCounter(Instruction action) {
+        if (action instanceof GotoInstruction) {
+            this.programCounter = ((GotoInstruction) action).getLine();
         } else {
             this.programCounter++;
         }

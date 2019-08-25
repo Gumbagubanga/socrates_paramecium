@@ -3,20 +3,21 @@ package de.socrates.paramecium.language;
 import de.socrates.paramecium.Paramecium;
 import de.socrates.paramecium.language.types.Direction;
 
-public class MoveStatement implements Statement {
+public class MoveInstruction implements Instruction {
     private final Direction direction;
 
-    public MoveStatement(Direction direction) {
+    public MoveInstruction(Direction direction) {
         this.direction = direction;
     }
 
-    public static Statement random() {
-        return new MoveStatement(Direction.random());
+    public static Instruction random() {
+        return new MoveInstruction(Direction.random());
     }
 
     @Override
     public void execute(Paramecium paramecium) {
         paramecium.move(direction);
+        paramecium.exhaust(1);
     }
 
     @Override

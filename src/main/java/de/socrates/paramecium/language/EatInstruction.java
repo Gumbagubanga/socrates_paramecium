@@ -2,11 +2,11 @@ package de.socrates.paramecium.language;
 
 import de.socrates.paramecium.Paramecium;
 
-public class EatStatement implements Statement {
+public class EatInstruction implements Instruction {
 
     @Override
     public void execute(Paramecium paramecium) {
-        paramecium.eat(3);
+        paramecium.eat(2);
     }
 
     @Override

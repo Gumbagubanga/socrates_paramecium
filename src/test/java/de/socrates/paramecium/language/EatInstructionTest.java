@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
 
 @Testable
-class EatStatementTest {
+class EatInstructionTest {
 
     @Test
     void eat() {
-        Assertions.assertEquals("eat()", ((Statement) new EatStatement()).toString());
+        Assertions.assertEquals("eat()", ((Instruction) new EatInstruction()).toString());
     }
 }

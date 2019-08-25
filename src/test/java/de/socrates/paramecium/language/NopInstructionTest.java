@@ -5,11 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
 
 @Testable
-class GotoStatementTest {
+class NopInstructionTest {
 
     @Test
-    void goto_0() {
-        Assertions.assertEquals("goto(0)", ((Statement) new GotoStatement(0)).toString());
+    void nop() {
+        Assertions.assertEquals("nop()", ((Instruction) new NopInstruction()).toString());
     }
-
 }

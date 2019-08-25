@@ -1,14 +1,21 @@
 package de.socrates.paramecium.language;
 
-public class GotoStatement implements Statement {
+import de.socrates.paramecium.Paramecium;
+
+public class GotoInstruction implements Instruction {
     private final int line;
 
-    public GotoStatement(int line) {
+    public GotoInstruction(int line) {
         this.line = line;
     }
 
     public int getLine() {
         return line;
+    }
+
+    @Override
+    public void execute(Paramecium paramecium) {
+        paramecium.exhaust(1);
     }
 
     @Override
