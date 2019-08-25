@@ -1,5 +1,6 @@
 package de.socrates.paramecium;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
 
@@ -18,6 +19,7 @@ public class SimulationTest {
 
     public static final Comparator<Program> BEST_TICKS = Comparator.comparing(Program::getTicks).reversed();
 
+    @Disabled
     @Test
     void simulate() {
         List<Program> bestPrograms = mutate(i -> generateRandomProgram()).sorted(BEST_TICKS).limit(TAKE_BEST)

@@ -24,7 +24,7 @@ public class Paramecium {
     }
 
     public void eat(int energy) {
-        if (sense(Direction.NONE) == Environment.FOOD) {
+        if (sense(Direction.IN_PLACE) == Environment.FOOD) {
             health += energy;
             world.environment[yPosition][xPosition] = Environment.EMPTY;
         }
@@ -51,7 +51,7 @@ public class Paramecium {
             case NORTH:
                 sensePositionY--;
                 break;
-            case NONE:
+            case IN_PLACE:
                 break;
         }
 

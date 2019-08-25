@@ -62,7 +62,7 @@ class ProgramTest {
     @Test
     void if_false_nop() {
         Program program = new Program();
-        program.write(new IfClause(Direction.NONE, Environment.EMPTY, new NopStatement()));
+        program.write(new IfClause(Direction.IN_PLACE, Environment.EMPTY, new NopStatement()));
 
         World world = World.generate();
 
@@ -75,7 +75,7 @@ class ProgramTest {
     @Test
     void if_true_nop() {
         Program program = new Program();
-        program.write(new IfClause(Direction.NONE, Environment.FOOD, new NopStatement()));
+        program.write(new IfClause(Direction.IN_PLACE, Environment.FOOD, new NopStatement()));
 
         World world = World.generate();
 
