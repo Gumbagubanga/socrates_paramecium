@@ -20,7 +20,7 @@ public class MoveStatement implements Statement {
     }
 
     @Override
-    public String print() {
+    public String toString() {
         return String.format("move(%s)", direction);
     }
 }

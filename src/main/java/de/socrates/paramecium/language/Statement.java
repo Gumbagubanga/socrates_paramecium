@@ -11,5 +11,4 @@ public interface Statement {
         paramecium.exhaust(1);
     }
 
-    String print();
 }

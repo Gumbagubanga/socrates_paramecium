@@ -9,7 +9,7 @@ class GotoStatementTest {
 
     @Test
     void goto_0() {
-        Assertions.assertEquals("goto(0)", new GotoStatement(0).print());
+        Assertions.assertEquals("goto(0)", ((Statement) new GotoStatement(0)).toString());
     }
 
 }

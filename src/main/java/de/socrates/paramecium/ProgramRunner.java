@@ -34,7 +34,7 @@ class ProgramRunner {
 
     private void printDebug(Paramecium paramecium, Statement action) {
         if (debug) {
-            System.out.println(action.print());
+            System.out.println(action.toString());
             System.out.println(paramecium.toString());
         }
     }

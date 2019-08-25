@@ -1,6 +1,7 @@
 package de.socrates.paramecium;
 
 import de.socrates.paramecium.language.NopStatement;
+import de.socrates.paramecium.language.Statement;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ class ProgramTest {
         Program program = new Program();
         program.write(new NopStatement());
 
-        Assertions.assertEquals(new NopStatement().print(), program.read(0).print());
+        Assertions.assertEquals(((Statement) new NopStatement()).toString(), program.read(0).toString());
     }
 
     @Test
@@ -24,7 +25,7 @@ class ProgramTest {
         program.write(new NopStatement());
 
         Assertions.assertEquals(
-                String.format(" 0 %s\n 1 %s", new NopStatement().print(), new NopStatement().print()),
+                String.format(" 0 %s\n 1 %s", ((Statement) new NopStatement()).toString(), ((Statement) new NopStatement()).toString()),
                 program.toString());
     }
 

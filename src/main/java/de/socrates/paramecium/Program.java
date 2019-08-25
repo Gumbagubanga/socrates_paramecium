@@ -44,7 +44,7 @@ public class Program {
     @Override
     public String toString() {
         return IntStream.range(0, program.size())
-                .mapToObj(i -> String.format("%2d %s", i, program.get(i).print()))
+                .mapToObj(i -> String.format("%2d %s", i, program.get(i).toString()))
                 .collect(Collectors.joining("\n"));
     }
 }

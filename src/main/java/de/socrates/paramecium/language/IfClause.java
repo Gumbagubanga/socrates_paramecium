@@ -28,7 +28,7 @@ public class IfClause implements Statement {
     }
 
     @Override
-    public String print() {
-        return String.format("if(sense(%s) == %s) then %s", direction, sense, statement.print());
+    public String toString() {
+        return String.format("if(sense(%s) == %s) then %s", direction, sense, statement.toString());
     }
 }

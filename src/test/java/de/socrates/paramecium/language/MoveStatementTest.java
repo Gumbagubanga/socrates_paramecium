@@ -11,22 +11,22 @@ class MoveStatementTest {
 
     @Test
     void move_north() {
-        Assertions.assertEquals("move(NORTH)", new MoveStatement(Direction.NORTH).print());
+        Assertions.assertEquals("move(NORTH)", ((Statement) new MoveStatement(Direction.NORTH)).toString());
     }
 
     @Test
     void move_south() {
-        Assertions.assertEquals("move(SOUTH)", new MoveStatement(Direction.SOUTH).print());
+        Assertions.assertEquals("move(SOUTH)", ((Statement) new MoveStatement(Direction.SOUTH)).toString());
     }
 
     @Test
     void move_west() {
-        Assertions.assertEquals("move(WEST)", new MoveStatement(Direction.WEST).print());
+        Assertions.assertEquals("move(WEST)", ((Statement) new MoveStatement(Direction.WEST)).toString());
     }
 
     @Test
     void move_east() {
-        Assertions.assertEquals("move(EAST)", new MoveStatement(Direction.EAST).print());
+        Assertions.assertEquals("move(EAST)", ((Statement) new MoveStatement(Direction.EAST)).toString());
     }
 
 }

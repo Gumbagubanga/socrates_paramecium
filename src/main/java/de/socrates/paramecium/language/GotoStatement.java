@@ -12,8 +12,7 @@ public class GotoStatement implements Statement {
     }
 
     @Override
-    public String print() {
+    public String toString() {
         return String.format("goto(%d)", line);
     }
-
 }

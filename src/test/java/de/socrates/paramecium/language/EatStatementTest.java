@@ -9,6 +9,6 @@ class EatStatementTest {
 
     @Test
     void eat() {
-        Assertions.assertEquals("eat()", new EatStatement().print());
+        Assertions.assertEquals("eat()", ((Statement) new EatStatement()).toString());
     }
 }

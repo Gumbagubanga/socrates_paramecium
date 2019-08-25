@@ -9,6 +9,6 @@ class NopStatementTest {
 
     @Test
     void nop() {
-        Assertions.assertEquals("nop()", new NopStatement().print());
+        Assertions.assertEquals("nop()", ((Statement) new NopStatement()).toString());
     }
 }

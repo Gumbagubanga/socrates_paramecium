@@ -10,7 +10,7 @@ public class EatStatement implements Statement {
     }
 
     @Override
-    public String print() {
+    public String toString() {
         return "eat()";
     }
 }
