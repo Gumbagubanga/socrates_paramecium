@@ -7,7 +7,7 @@ import de.socrates.paramecium.language.MoveStatement;
 import de.socrates.paramecium.language.NopStatement;
 import de.socrates.paramecium.language.Statement;
 import de.socrates.paramecium.language.types.Direction;
-import de.socrates.paramecium.language.types.Sense;
+import de.socrates.paramecium.language.types.Environment;
 
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -67,10 +67,10 @@ public class StatementGenerator {
         return Direction.values()[element];
     }
 
-    private static Sense randomSense() {
-        int element = ThreadLocalRandom.current().nextInt(0, Sense.values().length);
+    private static Environment randomSense() {
+        int element = ThreadLocalRandom.current().nextInt(0, Environment.values().length);
 
-        return Sense.values()[element];
+        return Environment.values()[element];
     }
 
     private static int randomLineNumber() {

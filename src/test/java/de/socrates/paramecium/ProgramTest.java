@@ -5,7 +5,7 @@ import de.socrates.paramecium.language.GotoStatement;
 import de.socrates.paramecium.language.IfClause;
 import de.socrates.paramecium.language.NopStatement;
 import de.socrates.paramecium.language.types.Direction;
-import de.socrates.paramecium.language.types.Sense;
+import de.socrates.paramecium.language.types.Environment;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -62,7 +62,7 @@ class ProgramTest {
     @Test
     void if_false_nop() {
         Program program = new Program();
-        program.write(new IfClause(Direction.NONE, Sense.EMPTY, new NopStatement()));
+        program.write(new IfClause(Direction.NONE, Environment.EMPTY, new NopStatement()));
 
         World world = World.generate();
 
@@ -75,7 +75,7 @@ class ProgramTest {
     @Test
     void if_true_nop() {
         Program program = new Program();
-        program.write(new IfClause(Direction.NONE, Sense.FOOD, new NopStatement()));
+        program.write(new IfClause(Direction.NONE, Environment.FOOD, new NopStatement()));
 
         World world = World.generate();
 

@@ -1,7 +1,7 @@
 package de.socrates.paramecium;
 
 import de.socrates.paramecium.language.types.Direction;
-import de.socrates.paramecium.language.types.Sense;
+import de.socrates.paramecium.language.types.Environment;
 
 import java.util.Map;
 
@@ -24,9 +24,9 @@ public class Paramecium {
     }
 
     public void eat(int energy) {
-        if (sense(Direction.NONE) == Sense.FOOD) {
+        if (sense(Direction.NONE) == Environment.FOOD) {
             health += energy;
-            world.environment[yPosition][xPosition] = Sense.EMPTY;
+            world.environment[yPosition][xPosition] = Environment.EMPTY;
         }
     }
 
@@ -34,7 +34,7 @@ public class Paramecium {
         health -= energy;
     }
 
-    public Sense sense(Direction direction) {
+    public Environment sense(Direction direction) {
         int sensePositionX = xPosition;
         int sensePositionY = yPosition;
 
@@ -66,7 +66,7 @@ public class Paramecium {
                 Direction.EAST, this::moveEast
         );
 
-        if (sense(direction) != Sense.WALL) {
+        if (sense(direction) != Environment.WALL) {
             movement.entrySet().stream()
                     .filter(e -> e.getKey() == direction)
                     .map(Map.Entry::getValue)

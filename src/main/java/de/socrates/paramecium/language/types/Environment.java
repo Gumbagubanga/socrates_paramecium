@@ -1,5 +1,5 @@
 package de.socrates.paramecium.language.types;
 
-public enum Sense {
+public enum Environment {
     EMPTY, FOOD, WALL
 }

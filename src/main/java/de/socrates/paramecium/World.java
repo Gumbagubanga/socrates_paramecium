@@ -1,10 +1,10 @@
 package de.socrates.paramecium;
 
-import de.socrates.paramecium.language.types.Sense;
+import de.socrates.paramecium.language.types.Environment;
 
 public class World {
 
-    Sense[][] environment;
+    Environment[][] environment;
 
     public static World generate() {
         World world = new World();
@@ -22,17 +22,17 @@ public class World {
         int width = split[0].length();
         int height = split.length;
 
-        world.environment = new Sense[height][width];
+        world.environment = new Environment[height][width];
 
         for (int y = 0; y < split.length; y++) {
             String line = split[y];
             for (int x = 0; x < line.length(); x++) {
                 switch (line.charAt(x)) {
                     case 'x':
-                        world.environment[y][x] = Sense.WALL;
+                        world.environment[y][x] = Environment.WALL;
                         break;
                     case ' ':
-                        world.environment[y][x] = Sense.FOOD;
+                        world.environment[y][x] = Environment.FOOD;
                     default:
                         break;
                 }
@@ -46,10 +46,10 @@ public class World {
         String result = "";
 
         for (int y = 0; y < environment.length; y++) {
-            Sense[] senses = environment[y];
+            Environment[] senses = environment[y];
 
             for (int x = 0; x < senses.length; x++) {
-                Sense sens = senses[x];
+                Environment sens = senses[x];
                 switch (sens) {
                     case EMPTY:
                         result += "_";
