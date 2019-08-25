@@ -21,8 +21,8 @@ class WorldTest {
                 "x       x\n" +
                 "xxxxxxxxx";
 
-        Assertions.assertEquals(7, world.environment.length);
-        Assertions.assertEquals(9, world.environment[0].length);
+        Assertions.assertEquals(9, world.width());
+        Assertions.assertEquals(7, world.height());
 
         Assertions.assertEquals(ascii, world.toString());
     }

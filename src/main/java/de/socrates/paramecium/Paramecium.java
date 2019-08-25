@@ -3,20 +3,14 @@ package de.socrates.paramecium;
 import de.socrates.paramecium.language.types.Direction;
 import de.socrates.paramecium.language.types.Environment;
 
-import java.util.Map;
-
 public class Paramecium {
     private final World world;
 
     private int health;
-    private int xPosition;
-    private int yPosition;
 
-    public Paramecium(World world, int health, int xPosition, int yPosition) {
+    public Paramecium(int health, World world) {
         this.world = world;
         this.health = health;
-        this.xPosition = xPosition;
-        this.yPosition = yPosition;
     }
 
     public boolean isAlive() {
@@ -24,9 +18,8 @@ public class Paramecium {
     }
 
     public void eat(int energy) {
-        if (sense(Direction.IN_PLACE) == Environment.FOOD) {
+        if (world.hasFood()) {
             health += energy;
-            world.environment[yPosition][xPosition] = Environment.EMPTY;
         }
     }
 
@@ -35,61 +28,11 @@ public class Paramecium {
     }
 
     public Environment sense(Direction direction) {
-        int sensePositionX = xPosition;
-        int sensePositionY = yPosition;
-
-        switch (direction) {
-            case SOUTH:
-                sensePositionY++;
-                break;
-            case WEST:
-                sensePositionX--;
-                break;
-            case EAST:
-                sensePositionX++;
-                break;
-            case NORTH:
-                sensePositionY--;
-                break;
-            case IN_PLACE:
-                break;
-        }
-
-        return world.environment[sensePositionY][sensePositionX];
+        return world.whatIsIn(direction);
     }
 
     public void move(Direction direction) {
-        Map<Direction, Runnable> movement = Map.of(
-                Direction.NORTH, this::moveNorth,
-                Direction.WEST, this::moveWest,
-                Direction.SOUTH, this::moveSouth,
-                Direction.EAST, this::moveEast
-        );
-
-        if (sense(direction) != Environment.WALL) {
-            movement.entrySet().stream()
-                    .filter(e -> e.getKey() == direction)
-                    .map(Map.Entry::getValue)
-                    .findFirst()
-                    .ifPresent(Runnable::run);
-        }
-
-    }
-
-    private void moveEast() {
-        xPosition += 1;
-    }
-
-    private void moveWest() {
-        xPosition -= 1;
-    }
-
-    private void moveNorth() {
-        yPosition -= 1;
-    }
-
-    private void moveSouth() {
-        yPosition += 1;
+        world.move(direction);
     }
 
     @Override

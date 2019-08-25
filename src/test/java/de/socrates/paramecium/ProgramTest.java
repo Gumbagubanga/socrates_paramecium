@@ -27,7 +27,7 @@ class ProgramTest {
         Program program = new Program();
         program.write(new NopStatement());
 
-        Paramecium paramecium = new Paramecium(null, 1, 0, 0);
+        Paramecium paramecium = new Paramecium(1, null);
         program.execute(paramecium);
 
         Assertions.assertFalse(paramecium.isAlive());
@@ -40,7 +40,7 @@ class ProgramTest {
 
         World world = World.generate();
 
-        Paramecium paramecium = new Paramecium(world, 1, 1, 1);
+        Paramecium paramecium = new Paramecium(1, world);
         program.execute(paramecium);
 
         Assertions.assertTrue(paramecium.isAlive());
@@ -53,7 +53,7 @@ class ProgramTest {
         program.write(new EatStatement());
         program.write(new NopStatement());
 
-        Paramecium paramecium = new Paramecium(null, 2, 0, 0);
+        Paramecium paramecium = new Paramecium(2, null);
         program.execute(paramecium);
 
         Assertions.assertFalse(paramecium.isAlive());
@@ -66,7 +66,7 @@ class ProgramTest {
 
         World world = World.generate();
 
-        Paramecium paramecium = new Paramecium(world, 1, 1, 1);
+        Paramecium paramecium = new Paramecium(1, world);
         program.execute(paramecium);
 
         Assertions.assertFalse(paramecium.isAlive());
@@ -79,7 +79,7 @@ class ProgramTest {
 
         World world = World.generate();
 
-        Paramecium paramecium = new Paramecium(world, 2, 1, 1);
+        Paramecium paramecium = new Paramecium(2, world);
         program.execute(paramecium);
 
         Assertions.assertFalse(paramecium.isAlive());

@@ -9,14 +9,14 @@ class ParameciumTest {
 
     @Test
     void positive_health() {
-        Paramecium paramecium = new Paramecium(null, 1, 0, 0);
+        Paramecium paramecium = new Paramecium(1, null);
 
         Assertions.assertTrue(paramecium.isAlive());
     }
 
     @Test
     void zero_health() {
-        Paramecium paramecium = new Paramecium(null, 0, 0, 0);
+        Paramecium paramecium = new Paramecium(0, null);
 
         Assertions.assertFalse(paramecium.isAlive());
     }

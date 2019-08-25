@@ -1,10 +1,15 @@
 package de.socrates.paramecium;
 
+import de.socrates.paramecium.language.types.Direction;
 import de.socrates.paramecium.language.types.Environment;
+
+import java.util.Map;
 
 public class World {
 
-    Environment[][] environment;
+    private int xPosition;
+    private int yPosition;
+    private Environment[][] environment;
 
     public static World generate() {
         World world = new World();
@@ -38,7 +43,84 @@ public class World {
                 }
             }
         }
+
+        world.xPosition = 1;
+        world.yPosition = 1;
+
         return world;
+    }
+
+    Environment whatIsIn(Direction direction) {
+        int sensePositionX = xPosition;
+        int sensePositionY = yPosition;
+
+        switch (direction) {
+            case SOUTH:
+                sensePositionY++;
+                break;
+            case WEST:
+                sensePositionX--;
+                break;
+            case EAST:
+                sensePositionX++;
+                break;
+            case NORTH:
+                sensePositionY--;
+                break;
+            case IN_PLACE:
+                break;
+        }
+
+        return environment[sensePositionY][sensePositionX];
+    }
+
+    void move(Direction direction) {
+        Map<Direction, Runnable> movement = Map.of(
+                Direction.NORTH, this::moveNorth,
+                Direction.WEST, this::moveWest,
+                Direction.SOUTH, this::moveSouth,
+                Direction.EAST, this::moveEast
+        );
+
+        if (whatIsIn(direction) != Environment.WALL) {
+            movement.entrySet().stream()
+                    .filter(e -> e.getKey() == direction)
+                    .map(Map.Entry::getValue)
+                    .findFirst()
+                    .ifPresent(Runnable::run);
+        }
+    }
+
+    boolean hasFood() {
+        if (environment[yPosition][xPosition] == Environment.FOOD) {
+            environment[yPosition][xPosition] = Environment.EMPTY;
+            return true;
+        }
+        return false;
+    }
+
+    int width() {
+        return environment[0].length;
+    }
+
+    int height() {
+        return environment.length;
+    }
+
+    private void moveEast() {
+        xPosition += 1;
+    }
+
+    private void moveWest() {
+        xPosition -= 1;
+    }
+
+    private void moveNorth() {
+        yPosition -= 1;
+    }
+
+    private void moveSouth() {
+        yPosition += 1;
     }
 
     @Override
@@ -72,4 +154,5 @@ public class World {
 
         return result;
     }
+
 }
