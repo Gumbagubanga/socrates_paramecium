@@ -6,7 +6,8 @@ public class EatInstruction implements Instruction {
 
     @Override
     public void execute(Paramecium paramecium) {
-        paramecium.eat(2);
+        paramecium.eat(3);
+        paramecium.exhaust(1);
     }
 
     @Override

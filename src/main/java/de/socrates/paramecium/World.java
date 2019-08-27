@@ -16,11 +16,11 @@ public class World {
 
         String ascii;
         ascii = "xxxxxxxxx\n" +
-                "x       x\n" +
-                "x   x   x\n" +
-                "x  xxx  x\n" +
-                "x   x   x\n" +
-                "x       x\n" +
+                "x.......x\n" +
+                "x...x...x\n" +
+                "x..xxx..x\n" +
+                "x...x...x\n" +
+                "x.......x\n" +
                 "xxxxxxxxx";
 
         String[] split = ascii.split("\n");
@@ -32,15 +32,7 @@ public class World {
         for (int y = 0; y < split.length; y++) {
             String line = split[y];
             for (int x = 0; x < line.length(); x++) {
-                switch (line.charAt(x)) {
-                    case 'x':
-                        world.environment[y][x] = Environment.WALL;
-                        break;
-                    case ' ':
-                        world.environment[y][x] = Environment.FOOD;
-                    default:
-                        break;
-                }
+                world.environment[y][x] = Environment.parse(line.charAt(x));
             }
         }
 
@@ -50,7 +42,7 @@ public class World {
         return world;
     }
 
-    Environment whatIsIn(Direction direction) {
+    Environment whatIs(Direction direction) {
         int sensePositionX = xPosition;
         int sensePositionY = yPosition;
 
@@ -82,7 +74,7 @@ public class World {
                 Direction.EAST, this::moveEast
         );
 
-        if (whatIsIn(direction) != Environment.WALL) {
+        if (whatIs(direction) != Environment.WALL) {
             movement.entrySet().stream()
                     .filter(e -> e.getKey() == direction)
                     .map(Map.Entry::getValue)
@@ -91,7 +83,7 @@ public class World {
         }
     }
 
-    boolean hasFood() {
+    boolean takeFood() {
         if (environment[yPosition][xPosition] == Environment.FOOD) {
             environment[yPosition][xPosition] = Environment.EMPTY;
             return true;
@@ -128,23 +120,10 @@ public class World {
         String result = "";
 
         for (int y = 0; y < environment.length; y++) {
-            Environment[] senses = environment[y];
+            Environment[] row = environment[y];
 
-            for (int x = 0; x < senses.length; x++) {
-                Environment sens = senses[x];
-                switch (sens) {
-                    case EMPTY:
-                        result += "_";
-                        break;
-                    case FOOD:
-                        result += " ";
-                        break;
-                    case WALL:
-                        result += "x";
-                        break;
-                    default:
-                        break;
-                }
+            for (int x = 0; x < row.length; x++) {
+                result += row[x].getAscii();
             }
 
             if (y != environment.length - 1) {

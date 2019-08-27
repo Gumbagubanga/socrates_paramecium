@@ -4,7 +4,7 @@ import de.socrates.paramecium.language.types.Direction;
 import de.socrates.paramecium.language.types.Environment;
 
 public class Paramecium {
-    private final World world;
+    final World world;
 
     private int health;
 
@@ -18,7 +18,7 @@ public class Paramecium {
     }
 
     public void eat(int energy) {
-        if (world.hasFood()) {
+        if (world.takeFood()) {
             health += energy;
         }
     }
@@ -28,7 +28,7 @@ public class Paramecium {
     }
 
     public Environment sense(Direction direction) {
-        return world.whatIsIn(direction);
+        return world.whatIs(direction);
     }
 
     public void move(Direction direction) {

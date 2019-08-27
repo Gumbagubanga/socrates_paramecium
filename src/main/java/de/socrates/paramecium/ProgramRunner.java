@@ -10,7 +10,7 @@ class ProgramRunner {
     private int programCounter = 0;
     private boolean debug;
 
-    private ProgramRunner(Program program, boolean debug) {
+    ProgramRunner(Program program, boolean debug) {
         this.program = program;
         this.debug = debug;
     }
@@ -19,23 +19,20 @@ class ProgramRunner {
         this(program, false);
     }
 
-    void execute(Paramecium paramecium) {
+    Performance execute(Paramecium paramecium) {
         Instruction action;
+
+        int ticks = 0;
 
         while (paramecium.isAlive() && (action = program.read(programCounter)) != null) {
             action.execute(paramecium);
+            updateProgramCounter(action);
 
             printDebug(paramecium, action);
-
-            updateProgramCounter(action);
+            ticks++;
         }
-    }
 
-    private void printDebug(Paramecium paramecium, Instruction action) {
-        if (debug) {
-            System.out.println(action.toString());
-            System.out.println(paramecium.toString());
-        }
+        return new Performance(program, ticks);
     }
 
     private void updateProgramCounter(Instruction action) {
@@ -43,6 +40,15 @@ class ProgramRunner {
             this.programCounter = ((GotoInstruction) action).getLine();
         } else {
             this.programCounter++;
+        }
+    }
+
+    private void printDebug(Paramecium paramecium, Instruction action) {
+        if (debug) {
+            System.out.println(paramecium.toString());
+            System.out.println(action.toString());
+            System.out.println(paramecium.world.toString());
+            System.out.println();
         }
     }
 }

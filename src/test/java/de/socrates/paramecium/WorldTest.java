@@ -11,14 +11,13 @@ class WorldTest {
     void ascii_parsing() {
         World world = World.generate();
 
-
         String ascii;
         ascii = "xxxxxxxxx\n" +
-                "x       x\n" +
-                "x   x   x\n" +
-                "x  xxx  x\n" +
-                "x   x   x\n" +
-                "x       x\n" +
+                "x.......x\n" +
+                "x...x...x\n" +
+                "x..xxx..x\n" +
+                "x...x...x\n" +
+                "x.......x\n" +
                 "xxxxxxxxx";
 
         Assertions.assertEquals(9, world.width());

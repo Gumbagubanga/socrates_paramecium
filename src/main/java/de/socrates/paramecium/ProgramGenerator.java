@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 
 public class ProgramGenerator {
 
-    public static final int PROGRAM_SIZE = 20;
+    private static final int PROGRAM_SIZE = 20;
 
     private static final Map<Integer, Supplier<Instruction>> SIMPLE_SUPPLIER_MAP = Map.of(
             0, NopInstruction::new,
@@ -30,7 +30,7 @@ public class ProgramGenerator {
             3, ProgramGenerator::generateGotoStatement,
             4, ProgramGenerator::generateIfClause);
 
-    public static Program randomProgram() {
+    static Program randomProgram() {
         List<Instruction> code = IntStream.range(0, PROGRAM_SIZE)
                 .mapToObj(i -> randomStatement())
                 .collect(Collectors.toList());
@@ -38,18 +38,17 @@ public class ProgramGenerator {
         return new Program(code);
     }
 
-
     static Instruction randomStatement() {
         int element = ThreadLocalRandom.current().nextInt(0, SUPPLIER_MAP.size());
 
         return SUPPLIER_MAP.get(element).get();
     }
 
-    static Instruction generateGotoStatement() {
+    private static Instruction generateGotoStatement() {
         return new GotoInstruction(randomLineNumber());
     }
 
-    static Instruction generateIfClause() {
+    private static Instruction generateIfClause() {
         return IfClause.random(randomSimpleStatement());
     }
 

@@ -6,76 +6,40 @@ import org.junit.platform.commons.annotation.Testable;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Testable
 public class SimulationTest {
 
-    public static final int SAMPLE_SIZE = 1000;
-    public static final int TAKE_BEST = 10;
+    private static final Comparator<Performance> BEST_PERFORMER = Comparator.comparing(Performance::getTicks).reversed();
 
-    public static final Comparator<Program> BEST_TICKS = Comparator.comparing(Program::getTicks).reversed();
+    private static final int SAMPLE_SIZE = 10_000;
+    private static final int TAKE_BEST = 1;
 
     @Disabled
     @Test
     void simulate() {
-        List<Program> bestPrograms = mutate(i -> generateRandomProgram()).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
-                .flatMap(p -> mutate(sample -> p.singleMutation())).sorted(BEST_TICKS).limit(TAKE_BEST)
+        List<Performance> collect = IntStream.range(0, SAMPLE_SIZE)
+                .mapToObj(i -> ProgramGenerator.randomProgram())
+                .map(SimulationTest::executeProgram)
+                .sorted(BEST_PERFORMER)
+                .limit(TAKE_BEST)
                 .collect(Collectors.toList());
 
-        Program bestProgram = bestPrograms.stream().findFirst().get();
-
-        playback(bestProgram);
-    }
-
-    private Stream<Program> mutate(IntFunction<Program> programIntFunction) {
-        return IntStream.range(0, SAMPLE_SIZE)
-                .mapToObj(programIntFunction)
-                .map(SimulationTest::executeProgram);
-    }
-
-    private static Program executeProgram(Program program) {
-        World world = World.generate();
-        program.execute(new Paramecium(10, world));
-        return program;
-    }
-
-    private static Program generateRandomProgram() {
-        Program program = new Program();
-        IntStream.range(0, StatementGenerator.PROGRAM_SIZE)
-                .mapToObj(i -> StatementGenerator.randomStatement())
-                .forEach(program::write);
-        return program;
-    }
-
-    private static void playback(Program program) {
-        System.out.println("Ticks " + program.getTicks());
-        program.reset();
-        program.debug = true;
-
-        System.out.println(program);
+        Performance performance = collect.get(0);
+        System.out.println(performance);
         System.out.println();
+        executeProgram(performance.getProgram(), true);
+    }
 
+    private static Performance executeProgram(Program program, boolean debug) {
         World world = World.generate();
-        program.execute(new Paramecium(10, world));
+        Paramecium paramecium = new Paramecium(10, world);
+        return new ProgramRunner(program, debug).execute(paramecium);
+    }
+
+    private static Performance executeProgram(Program program) {
+        return executeProgram(program, false);
     }
 }
