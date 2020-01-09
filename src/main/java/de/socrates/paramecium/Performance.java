@@ -20,6 +20,6 @@ public class Performance {
 
     @Override
     public String toString() {
-        return String.format("Ticks %d\n%s", ticks, program);
+        return String.format("Ticks %d", ticks);
     }
 }
