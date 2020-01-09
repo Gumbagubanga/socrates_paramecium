@@ -1,6 +1,5 @@
 package de.socrates.paramecium;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
 
@@ -17,20 +16,38 @@ public class SimulationTest {
     private static final int SAMPLE_SIZE = 10_000;
     private static final int TAKE_BEST = 1;
 
-    @Disabled
     @Test
     void simulate() {
-        List<Performance> collect = IntStream.range(0, SAMPLE_SIZE)
+        List<Program> firstGenerations = IntStream.range(0, SAMPLE_SIZE)
                 .mapToObj(i -> ProgramGenerator.randomProgram())
+                .collect(Collectors.toList());
+
+        List<Performance> firstPerformances = evaluate(firstGenerations);
+
+        Performance performance = firstPerformances.get(0);
+        System.out.println(performance);
+        Program program = performance.getProgram();
+        // executeProgram(program, true);
+
+        List<Program> nextGenerations = IntStream.range(0, SAMPLE_SIZE)
+                .mapToObj(i -> program.singleMutation())
+                .collect(Collectors.toList());
+
+        List<Performance> nextPerformances = evaluate(nextGenerations);
+
+        Performance nextPerformance = nextPerformances.get(0);
+        System.out.println(nextPerformance);
+        System.out.println();
+        Program nextProgram = nextPerformance.getProgram();
+        executeProgram(nextProgram, true);
+    }
+
+    private static List<Performance> evaluate(List<Program> programs) {
+        return programs.stream()
                 .map(SimulationTest::executeProgram)
                 .sorted(BEST_PERFORMER)
                 .limit(TAKE_BEST)
                 .collect(Collectors.toList());
-
-        Performance performance = collect.get(0);
-        System.out.println(performance);
-        System.out.println();
-        executeProgram(performance.getProgram(), true);
     }
 
     private static Performance executeProgram(Program program, boolean debug) {
