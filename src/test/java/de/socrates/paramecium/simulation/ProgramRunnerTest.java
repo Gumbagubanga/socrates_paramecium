@@ -1,11 +1,13 @@
-package de.socrates.paramecium;
+package de.socrates.paramecium.simulation;
 
+import de.socrates.paramecium.environment.Direction;
+import de.socrates.paramecium.environment.Paramecium;
+import de.socrates.paramecium.environment.Tile;
+import de.socrates.paramecium.environment.World;
 import de.socrates.paramecium.language.EatInstruction;
 import de.socrates.paramecium.language.GotoInstruction;
 import de.socrates.paramecium.language.IfClause;
 import de.socrates.paramecium.language.NopInstruction;
-import de.socrates.paramecium.language.types.Direction;
-import de.socrates.paramecium.language.types.Environment;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -60,7 +62,7 @@ class ProgramRunnerTest {
     @Test
     void if_false_nop() {
         Program program = new Program();
-        program.write(new IfClause(Direction.IN_PLACE, Environment.EMPTY, new NopInstruction()));
+        program.write(new IfClause(Direction.IN_PLACE, Tile.EMPTY, new NopInstruction()));
 
         World world = World.generate();
 
@@ -75,7 +77,7 @@ class ProgramRunnerTest {
     @Test
     void if_true_nop() {
         Program program = new Program();
-        program.write(new IfClause(Direction.IN_PLACE, Environment.FOOD, new NopInstruction()));
+        program.write(new IfClause(Direction.IN_PLACE, Tile.FOOD, new NopInstruction()));
 
         World world = World.generate();
 

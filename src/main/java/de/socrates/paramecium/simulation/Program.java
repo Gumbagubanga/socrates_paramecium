@@ -1,4 +1,4 @@
-package de.socrates.paramecium;
+package de.socrates.paramecium.simulation;
 
 import de.socrates.paramecium.language.Instruction;
 
@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Program {
+class Program {
 
     private final List<Instruction> code;
 

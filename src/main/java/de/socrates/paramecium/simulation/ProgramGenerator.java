@@ -1,4 +1,4 @@
-package de.socrates.paramecium;
+package de.socrates.paramecium.simulation;
 
 import de.socrates.paramecium.language.EatInstruction;
 import de.socrates.paramecium.language.GotoInstruction;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class ProgramGenerator {
+class ProgramGenerator {
 
     private static final int PROGRAM_SIZE = 20;
 

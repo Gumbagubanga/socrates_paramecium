@@ -1,4 +1,7 @@
-package de.socrates.paramecium;
+package de.socrates.paramecium.simulation;
+
+import de.socrates.paramecium.environment.Paramecium;
+import de.socrates.paramecium.environment.World;
 
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;

@@ -1,6 +1,6 @@
-package de.socrates.paramecium;
+package de.socrates.paramecium.simulation;
 
-public class Performance {
+class Performance {
 
     private final Program program;
     private final int ticks;

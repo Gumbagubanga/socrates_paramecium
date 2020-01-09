@@ -1,7 +1,7 @@
 package de.socrates.paramecium.language;
 
-import de.socrates.paramecium.Paramecium;
-import de.socrates.paramecium.language.types.Direction;
+import de.socrates.paramecium.environment.Direction;
+import de.socrates.paramecium.environment.Paramecium;
 
 public class MoveInstruction implements Instruction {
     private final Direction direction;

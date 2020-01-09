@@ -1,4 +1,4 @@
-package de.socrates.paramecium.language.types;
+package de.socrates.paramecium.environment;
 
 import java.util.concurrent.ThreadLocalRandom;
 

@@ -1,4 +1,4 @@
-package de.socrates.paramecium;
+package de.socrates.paramecium.simulation;
 
 import de.socrates.paramecium.language.Instruction;
 import de.socrates.paramecium.language.NopInstruction;

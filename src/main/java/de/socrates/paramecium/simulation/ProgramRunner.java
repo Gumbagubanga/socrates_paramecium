@@ -1,5 +1,6 @@
-package de.socrates.paramecium;
+package de.socrates.paramecium.simulation;
 
+import de.socrates.paramecium.environment.Paramecium;
 import de.socrates.paramecium.language.GotoInstruction;
 import de.socrates.paramecium.language.Instruction;
 

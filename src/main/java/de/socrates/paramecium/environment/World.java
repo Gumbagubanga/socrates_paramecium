@@ -1,7 +1,4 @@
-package de.socrates.paramecium;
-
-import de.socrates.paramecium.language.types.Direction;
-import de.socrates.paramecium.language.types.Environment;
+package de.socrates.paramecium.environment;
 
 import java.util.Map;
 
@@ -9,11 +6,9 @@ public class World {
 
     private int xPosition;
     private int yPosition;
-    private Environment[][] environment;
+    private Tile[][] tile;
 
     public static World generate() {
-        World world = new World();
-
         String ascii;
         ascii = "xxxxxxxxx\n" +
                 "x.......x\n" +
@@ -23,16 +18,22 @@ public class World {
                 "x.......x\n" +
                 "xxxxxxxxx";
 
+        return generate(ascii);
+    }
+
+    public static World generate(String ascii) {
+        World world = new World();
+
         String[] split = ascii.split("\n");
         int width = split[0].length();
         int height = split.length;
 
-        world.environment = new Environment[height][width];
+        world.tile = new Tile[height][width];
 
         for (int y = 0; y < split.length; y++) {
             String line = split[y];
             for (int x = 0; x < line.length(); x++) {
-                world.environment[y][x] = Environment.parse(line.charAt(x));
+                world.tile[y][x] = Tile.parse(line.charAt(x));
             }
         }
 
@@ -42,7 +43,7 @@ public class World {
         return world;
     }
 
-    Environment whatIs(Direction direction) {
+    Tile whatIs(Direction direction) {
         int sensePositionX = xPosition;
         int sensePositionY = yPosition;
 
@@ -63,7 +64,7 @@ public class World {
                 break;
         }
 
-        return environment[sensePositionY][sensePositionX];
+        return tile[sensePositionY][sensePositionX];
     }
 
     void move(Direction direction) {
@@ -74,7 +75,7 @@ public class World {
                 Direction.EAST, this::moveEast
         );
 
-        if (whatIs(direction) != Environment.WALL) {
+        if (whatIs(direction) != Tile.WALL) {
             movement.entrySet().stream()
                     .filter(e -> e.getKey() == direction)
                     .map(Map.Entry::getValue)
@@ -84,19 +85,19 @@ public class World {
     }
 
     boolean takeFood() {
-        if (environment[yPosition][xPosition] == Environment.FOOD) {
-            environment[yPosition][xPosition] = Environment.EMPTY;
+        if (tile[yPosition][xPosition] == Tile.FOOD) {
+            tile[yPosition][xPosition] = Tile.EMPTY;
             return true;
         }
         return false;
     }
 
     int width() {
-        return environment[0].length;
+        return tile[0].length;
     }
 
     int height() {
-        return environment.length;
+        return tile.length;
     }
 
     private void moveEast() {
@@ -119,14 +120,14 @@ public class World {
     public String toString() {
         String result = "";
 
-        for (int y = 0; y < environment.length; y++) {
-            Environment[] row = environment[y];
+        for (int y = 0; y < tile.length; y++) {
+            Tile[] row = tile[y];
 
             for (int x = 0; x < row.length; x++) {
                 result += row[x].getAscii();
             }
 
-            if (y != environment.length - 1) {
+            if (y != tile.length - 1) {
                 result += "\n";
             }
         }

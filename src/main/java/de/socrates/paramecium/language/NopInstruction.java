@@ -1,6 +1,6 @@
 package de.socrates.paramecium.language;
 
-import de.socrates.paramecium.Paramecium;
+import de.socrates.paramecium.environment.Paramecium;
 
 public class NopInstruction implements Instruction {
 

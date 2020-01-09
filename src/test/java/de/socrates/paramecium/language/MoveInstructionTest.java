@@ -1,6 +1,6 @@
 package de.socrates.paramecium.language;
 
-import de.socrates.paramecium.language.types.Direction;
+import de.socrates.paramecium.environment.Direction;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

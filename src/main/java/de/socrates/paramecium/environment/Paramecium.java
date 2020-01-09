@@ -1,10 +1,7 @@
-package de.socrates.paramecium;
-
-import de.socrates.paramecium.language.types.Direction;
-import de.socrates.paramecium.language.types.Environment;
+package de.socrates.paramecium.environment;
 
 public class Paramecium {
-    final World world;
+    public final World world;
 
     private int health;
 
@@ -27,7 +24,7 @@ public class Paramecium {
         health -= energy;
     }
 
-    public Environment sense(Direction direction) {
+    public Tile sense(Direction direction) {
         return world.whatIs(direction);
     }
 

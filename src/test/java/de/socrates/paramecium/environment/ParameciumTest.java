@@ -1,4 +1,4 @@
-package de.socrates.paramecium;
+package de.socrates.paramecium.environment;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

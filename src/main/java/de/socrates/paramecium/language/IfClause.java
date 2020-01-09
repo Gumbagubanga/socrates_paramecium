@@ -1,22 +1,22 @@
 package de.socrates.paramecium.language;
 
-import de.socrates.paramecium.Paramecium;
-import de.socrates.paramecium.language.types.Direction;
-import de.socrates.paramecium.language.types.Environment;
+import de.socrates.paramecium.environment.Direction;
+import de.socrates.paramecium.environment.Paramecium;
+import de.socrates.paramecium.environment.Tile;
 
 public class IfClause implements Instruction {
     private final Direction direction;
-    private final Environment sense;
+    private final Tile sense;
     private final Instruction statement;
 
-    public IfClause(Direction direction, Environment sense, Instruction statement) {
+    public IfClause(Direction direction, Tile sense, Instruction statement) {
         this.direction = direction;
         this.sense = sense;
         this.statement = statement;
     }
 
     public static Instruction random(Instruction randomSimpleStatement) {
-        return new IfClause(Direction.random(), Environment.random(), randomSimpleStatement);
+        return new IfClause(Direction.random(), Tile.random(), randomSimpleStatement);
     }
 
     @Override
