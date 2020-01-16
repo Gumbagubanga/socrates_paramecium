@@ -30,7 +30,13 @@ class ProgramGenerator {
             3, ProgramGenerator::generateGotoStatement,
             4, ProgramGenerator::generateIfClause);
 
-    static Program randomProgram() {
+    static List<Program> randomPrograms(int count) {
+        return IntStream.range(0, count)
+                .mapToObj(i -> ProgramGenerator.randomProgram())
+                .collect(Collectors.toList());
+    }
+
+    private static Program randomProgram() {
         List<Instruction> code = IntStream.range(0, PROGRAM_SIZE)
                 .mapToObj(i -> randomStatement())
                 .collect(Collectors.toList());
@@ -61,5 +67,4 @@ class ProgramGenerator {
     private static int randomLineNumber() {
         return ThreadLocalRandom.current().nextInt(0, PROGRAM_SIZE);
     }
-
 }

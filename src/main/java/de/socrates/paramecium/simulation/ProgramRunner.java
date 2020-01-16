@@ -1,6 +1,7 @@
 package de.socrates.paramecium.simulation;
 
 import de.socrates.paramecium.environment.Paramecium;
+import de.socrates.paramecium.environment.World;
 import de.socrates.paramecium.language.GotoInstruction;
 import de.socrates.paramecium.language.Instruction;
 
@@ -18,6 +19,16 @@ class ProgramRunner {
 
     ProgramRunner(Program program) {
         this(program, false);
+    }
+
+    public static Performance executeProgram(Program program, boolean debug) {
+        World world = World.generate();
+        Paramecium paramecium = new Paramecium(10, world);
+        return new ProgramRunner(program, debug).execute(paramecium);
+    }
+
+    public static Performance executeProgram(Program program) {
+        return executeProgram(program, false);
     }
 
     Performance execute(Paramecium paramecium) {
