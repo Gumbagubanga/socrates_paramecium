@@ -5,41 +5,51 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Simulation {
 
     private static final Comparator<Performance> BEST_PERFORMER = Comparator.comparing(Performance::getTicks).reversed();
-    private static final FamilyNode ROOT = FamilyNode.EMPTY;
-    private static final int SAMPLE_SIZE = 1_000_000;
-    private static final int TAKE_BEST = 10_000;
-    private static final int MAX_GENERATION = 1000;
+    private static final int SAMPLE_SIZE = 100_000;
+    private static final int MAX_GENERATION = 1_000;
+
+    private Performance best = null;
 
     public void run() {
-        List<Program> ancestors = ProgramGenerator.randomPrograms(SAMPLE_SIZE);
+        List<Performance> ancestors = evaluate(ProgramGenerator.randomPrograms(SAMPLE_SIZE));
 
-        ROOT.addAll(evaluate(ancestors));
+        for (int generation = 1; generation <= MAX_GENERATION; generation++) {
+            List<Performance> descendants = evaluate(breed(ancestors));
 
-        evolve(ROOT.getChildren(), 1);
+            List<Performance> nextGeneration = Stream.concat(ancestors.stream(), descendants.stream())
+                    .sorted(BEST_PERFORMER)
+                    .limit(SAMPLE_SIZE)
+                    .collect(Collectors.toList());
+
+            best = nextGeneration.get(0);
+
+            if (best.getTicks() > ancestors.get(0).getTicks()) {
+                System.out.printf("Generation %06d of %d | Best: %02d%n", generation, MAX_GENERATION, best.getTicks());
+            }
+
+            ancestors = nextGeneration;
+        }
     }
 
-    private static void evolve(List<FamilyNode> children, int currentGeneration) {
-        if (currentGeneration >= MAX_GENERATION) {
-            return;
-        }
-
+    private List<Program> breed(List<Performance> ancestors) {
         List<Program> descendants = new ArrayList<>();
-        for (FamilyNode child : children) {
-            Program mother = child.getProgram();
-            Program father = children.get(ThreadLocalRandom.current().nextInt(0, children.size())).getProgram();
+
+        for (Performance ancestor : ancestors) {
+            int index = ThreadLocalRandom.current().nextInt(0, ancestors.size());
+
+            Program mother = ancestor.getProgram();
+            Program father = ancestors.get(index).getProgram();
             Program descendant = Evolution.breed(mother, father);
 
             descendants.add(descendant);
         }
 
-        List<Performance> evaluate = evaluate(descendants);
-        List<FamilyNode> nextGenerations = evaluate.stream().map(FamilyNode::create).collect(Collectors.toList());
-
-        evolve(nextGenerations, currentGeneration + 1);
+        return descendants;
     }
 
     private static Performance evaluate(Program program) {
@@ -47,14 +57,10 @@ public class Simulation {
     }
 
     private static List<Performance> evaluate(List<Program> programs) {
-        return programs.stream()
-                .map(Simulation::evaluate)
-                .sorted(BEST_PERFORMER)
-                .limit(TAKE_BEST)
-                .collect(Collectors.toList());
+        return programs.stream().map(Simulation::evaluate).collect(Collectors.toList());
     }
 
-    public Performance findBest() {
-        return ROOT.findBest();
+    public Performance getBest() {
+        return best;
     }
 }

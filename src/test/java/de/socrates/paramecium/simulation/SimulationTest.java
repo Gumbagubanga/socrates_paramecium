@@ -12,7 +12,7 @@ public class SimulationTest {
 
         simulation.run();
 
-        Performance best = simulation.findBest();
+        Performance best = simulation.getBest();
 
         System.out.println(best);
 
