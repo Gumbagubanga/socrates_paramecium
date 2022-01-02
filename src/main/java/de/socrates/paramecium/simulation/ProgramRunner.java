@@ -5,7 +5,7 @@ import de.socrates.paramecium.environment.World;
 import de.socrates.paramecium.language.GotoInstruction;
 import de.socrates.paramecium.language.Instruction;
 
-class ProgramRunner {
+public class ProgramRunner {
 
     private final Program program;
 

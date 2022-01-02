@@ -3,40 +3,63 @@ package de.socrates.paramecium.simulation;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Simulation {
+import picocli.CommandLine;
 
+public class Simulation implements Runnable {
     private static final Comparator<Performance> BEST_PERFORMER = Comparator.comparing(Performance::getTicks).reversed();
-    private static final int SAMPLE_SIZE = 100_000;
-    private static final int MAX_GENERATION = 1_000;
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newWorkStealingPool();
 
-    private Performance best = null;
+    @CommandLine.Parameters
+    private int programSize;
+    @CommandLine.Parameters
+    private int sampleSize;
+    @CommandLine.Parameters
+    private int maxGeneration;
 
+    public static void main(String[] args) {
+        System.exit(new CommandLine(new Simulation()).execute(args));
+    }
+
+    @Override
     public void run() {
-        List<Performance> ancestors = evaluate(ProgramGenerator.randomPrograms(SAMPLE_SIZE));
+        List<Performance> ancestors = init();
 
-        for (int generation = 1; generation <= MAX_GENERATION; generation++) {
+        for (int generation = 1; generation <= maxGeneration; generation++) {
             List<Performance> descendants = evaluate(breed(ancestors));
 
-            List<Performance> nextGeneration = Stream.concat(ancestors.stream(), descendants.stream())
+            ancestors = Stream.concat(ancestors.stream(), descendants.stream())
                     .sorted(BEST_PERFORMER)
-                    .limit(SAMPLE_SIZE)
+                    .limit(sampleSize)
                     .collect(Collectors.toList());
-
-            best = nextGeneration.get(0);
-
-            if (best.getTicks() > ancestors.get(0).getTicks()) {
-                System.out.printf("Generation %06d of %d | Best: %02d%n", generation, MAX_GENERATION, best.getTicks());
-            }
-
-            ancestors = nextGeneration;
         }
+
+        Performance best = ancestors.get(0);
+
+        ProgramRunner.executeProgram(best.getProgram(), true);
+        System.out.println(best);
+    }
+
+    private List<Performance> init() {
+        ProgramGenerator programGenerator = new ProgramGenerator(programSize);
+        List<Program> init = IntStream.range(0, sampleSize)
+                .mapToObj(i -> programGenerator.randomProgram())
+                .collect(Collectors.toList());
+        return evaluate(init);
     }
 
     private List<Program> breed(List<Performance> ancestors) {
+        EvolutionStrategy evolutionStrategy = new EvolutionStrategy(programSize);
+
         List<Program> descendants = new ArrayList<>();
 
         for (Performance ancestor : ancestors) {
@@ -44,7 +67,7 @@ public class Simulation {
 
             Program mother = ancestor.getProgram();
             Program father = ancestors.get(index).getProgram();
-            Program descendant = Evolution.breed(mother, father);
+            Program descendant = evolutionStrategy.breed(mother, father);
 
             descendants.add(descendant);
         }
@@ -57,10 +80,21 @@ public class Simulation {
     }
 
     private static List<Performance> evaluate(List<Program> programs) {
-        return programs.stream().map(Simulation::evaluate).collect(Collectors.toList());
-    }
+        List<Callable<Performance>> collect = programs.stream()
+                .map(p -> (Callable<Performance>) () -> Simulation.evaluate(p))
+                .collect(Collectors.toList());
 
-    public Performance getBest() {
-        return best;
+        List<Performance> results = new ArrayList<>();
+        try {
+            List<Future<Performance>> futures = EXECUTOR_SERVICE.invokeAll(collect);
+            for (Future<Performance> future : futures) {
+                Performance performance = future.get();
+                results.add(performance);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return results;
     }
 }

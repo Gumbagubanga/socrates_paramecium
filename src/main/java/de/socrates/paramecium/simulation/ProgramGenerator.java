@@ -16,55 +16,53 @@ import java.util.stream.IntStream;
 
 class ProgramGenerator {
 
-    private static final int PROGRAM_SIZE = 20;
+    private final int programSize;
+    private final Map<Integer, Supplier<Instruction>> supplierMap;
+    private final Map<Integer, Supplier<Instruction>> simpleSupplierMap;
 
-    private static final Map<Integer, Supplier<Instruction>> SIMPLE_SUPPLIER_MAP = Map.of(
-            0, NopInstruction::new,
-            1, EatInstruction::new,
-            2, MoveInstruction::random);
-
-    private static final Map<Integer, Supplier<Instruction>> SUPPLIER_MAP = Map.of(
-            0, NopInstruction::new,
-            1, EatInstruction::new,
-            2, MoveInstruction::random,
-            3, ProgramGenerator::generateGotoStatement,
-            4, ProgramGenerator::generateIfClause);
-
-    static List<Program> randomPrograms(int count) {
-        return IntStream.range(0, count)
-                .mapToObj(i -> ProgramGenerator.randomProgram())
-                .collect(Collectors.toList());
+    ProgramGenerator(int programSize) {
+        this.programSize = programSize;
+        this.supplierMap = Map.of(
+                0, NopInstruction::new,
+                1, EatInstruction::new,
+                2, MoveInstruction::random,
+                3, this::generateGotoStatement,
+                4, this::generateIfClause);
+        this.simpleSupplierMap = Map.of(
+                0, NopInstruction::new,
+                1, EatInstruction::new,
+                2, MoveInstruction::random);
     }
 
-    private static Program randomProgram() {
-        List<Instruction> code = IntStream.range(0, PROGRAM_SIZE)
+    Program randomProgram() {
+        List<Instruction> code = IntStream.range(0, programSize)
                 .mapToObj(i -> randomStatement())
                 .collect(Collectors.toList());
 
         return new Program(code);
     }
 
-    static Instruction randomStatement() {
-        int element = ThreadLocalRandom.current().nextInt(0, SUPPLIER_MAP.size());
+    Instruction randomStatement() {
+        int element = ThreadLocalRandom.current().nextInt(0, supplierMap.size());
 
-        return SUPPLIER_MAP.get(element).get();
+        return supplierMap.get(element).get();
     }
 
-    private static Instruction generateGotoStatement() {
+    private Instruction generateGotoStatement() {
         return new GotoInstruction(randomLineNumber());
     }
 
-    private static Instruction generateIfClause() {
+    private Instruction generateIfClause() {
         return IfClause.random(randomSimpleStatement());
     }
 
-    private static Instruction randomSimpleStatement() {
-        int element = ThreadLocalRandom.current().nextInt(0, SIMPLE_SUPPLIER_MAP.size());
+    private Instruction randomSimpleStatement() {
+        int element = ThreadLocalRandom.current().nextInt(0, simpleSupplierMap.size());
 
-        return SIMPLE_SUPPLIER_MAP.get(element).get();
+        return simpleSupplierMap.get(element).get();
     }
 
-    private static int randomLineNumber() {
-        return ThreadLocalRandom.current().nextInt(0, PROGRAM_SIZE);
+    private int randomLineNumber() {
+        return ThreadLocalRandom.current().nextInt(0, programSize);
     }
 }
