@@ -1,12 +1,12 @@
 package de.socrates.paramecium.environment;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.SplittableRandom;
 
 public enum Direction {
     SOUTH, WEST, EAST, NORTH, IN_PLACE;
 
     public static Direction random() {
-        int element = ThreadLocalRandom.current().nextInt(0, Direction.values().length);
+        int element = new SplittableRandom().nextInt(Direction.values().length);
 
         return Direction.values()[element];
     }

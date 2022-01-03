@@ -2,7 +2,7 @@ package de.socrates.paramecium.environment;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.SplittableRandom;
 
 public enum Tile {
     EMPTY(' '),
@@ -16,7 +16,7 @@ public enum Tile {
     }
 
     public static Tile random() {
-        int element = ThreadLocalRandom.current().nextInt(0, Tile.values().length);
+        int element = new SplittableRandom().nextInt(0, Tile.values().length);
 
         return Tile.values()[element];
     }
