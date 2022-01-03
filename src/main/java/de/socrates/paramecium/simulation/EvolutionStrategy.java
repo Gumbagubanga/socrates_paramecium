@@ -1,5 +1,7 @@
 package de.socrates.paramecium.simulation;
 
+import com.codahale.metrics.Timer;
+
 import de.socrates.paramecium.language.Instruction;
 
 import java.util.ArrayList;
@@ -14,42 +16,58 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.codahale.metrics.MetricRegistry.name;
+
 public class EvolutionStrategy {
 
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newWorkStealingPool();
-    private static final Comparator<Performance> BEST_PERFORMER = Comparator.comparing(Performance::getTicks).reversed();
+    private static final Comparator<Performance> PERFORMANCE_COMPARATOR = Comparator.comparing(Performance::getTicks);
     private final int programSize;
     private final int sampleSize;
+
+    private final Timer evaluationTimer = Simulation.metrics.timer(name(EvolutionStrategy.class, "evaluation"));
+    private final Timer selectionTimer = Simulation.metrics.timer(name(EvolutionStrategy.class, "selection"));
 
     public EvolutionStrategy(int programSize, int sampleSize) {
         this.programSize = programSize;
         this.sampleSize = sampleSize;
     }
 
-    static Performance evaluate(Program program) {
-        return ProgramRunner.executeProgram(program);
-    }
+    List<Performance> evaluate(List<Program> programs) {
+        try (Timer.Context context = evaluationTimer.time()) {
+            List<Callable<Performance>> collect = programs.stream()
+                    .map(p -> (Callable<Performance>) () -> ProgramRunner.executeProgram(p))
+                    .collect(Collectors.toList());
 
-    static List<Performance> evaluate(List<Program> programs) {
-        List<Callable<Performance>> collect = programs.stream()
-                .map(p -> (Callable<Performance>) () -> evaluate(p))
-                .collect(Collectors.toList());
-
-        List<Performance> results = new ArrayList<>();
-        try {
-            List<Future<Performance>> futures = EXECUTOR_SERVICE.invokeAll(collect);
-            for (Future<Performance> future : futures) {
-                Performance performance = future.get();
-                results.add(performance);
+            List<Performance> results = new ArrayList<>();
+            try {
+                List<Future<Performance>> futures = EXECUTOR_SERVICE.invokeAll(collect);
+                for (Future<Performance> future : futures) {
+                    Performance performance = future.get();
+                    results.add(performance);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
 
-        return results;
+            return results;
+        }
     }
 
     List<Performance> selection(List<Performance> ancestors, List<Performance> descendants) {
+        try (Timer.Context context = selectionTimer.time()) {
+            return tournamentSelection(ancestors, descendants);
+        }
+    }
+
+    private List<Performance> bestSelection(List<Performance> ancestors, List<Performance> descendants) {
+        return Stream.concat(ancestors.stream(), descendants.stream())
+                .sorted(PERFORMANCE_COMPARATOR.reversed())
+                .limit(sampleSize)
+                .collect(Collectors.toList());
+    }
+
+    private List<Performance> tournamentSelection(List<Performance> ancestors, List<Performance> descendants) {
         List<Performance> collect = Stream.concat(ancestors.stream(), descendants.stream()).collect(Collectors.toList());
 
         while (collect.size() > sampleSize) {
@@ -58,19 +76,8 @@ public class EvolutionStrategy {
 
             Performance o1 = collect.get(i);
             Performance o2 = collect.get(i2);
-            switch (Comparator.comparing(Performance::getTicks).compare(o1, o2)) {
-                case 0:
-                case -1:
-                    collect.remove(i);
-                    break;
-                case +1:
-                    collect.remove(i2);
-                    break;
-                default:
-                    break;
-            }
+            collect.remove(PERFORMANCE_COMPARATOR.compare(o1, o2) <= 0 ? i : i2);
         }
-
         return collect;
     }
 

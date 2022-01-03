@@ -1,12 +1,18 @@
 package de.socrates.paramecium.simulation;
 
+import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.MetricRegistry;
+
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import picocli.CommandLine;
 
 public class Simulation implements Runnable {
+
+    static final MetricRegistry metrics = new MetricRegistry();
 
     @CommandLine.Parameters
     private int programSize;
@@ -16,7 +22,7 @@ public class Simulation implements Runnable {
     private int maxGeneration;
 
     @CommandLine.Option(names = {"--renderbest"})
-    private boolean renderBest = false;
+    private boolean renderBest = true;
 
     public static void main(String[] args) {
         System.exit(new CommandLine(new Simulation()).execute(args));
@@ -26,12 +32,20 @@ public class Simulation implements Runnable {
     public void run() {
         EvolutionStrategy evolutionStrategy = new EvolutionStrategy(programSize, sampleSize);
 
-        List<Performance> ancestors = init();
+        ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .build();
+        reporter.start(5, TimeUnit.SECONDS);
+
+        List<Performance> ancestors = init(evolutionStrategy);
         for (int generation = 1; generation <= maxGeneration; generation++) {
-            List<Performance> descendants = EvolutionStrategy.evaluate(evolutionStrategy.breed(ancestors));
+            List<Performance> descendants = evolutionStrategy.evaluate(evolutionStrategy.breed(ancestors));
 
             ancestors = evolutionStrategy.selection(ancestors, descendants);
         }
+
+        reporter.stop();
 
         Performance best = ancestors.get(0);
 
@@ -42,11 +56,11 @@ public class Simulation implements Runnable {
         System.out.println(best);
     }
 
-    private List<Performance> init() {
+    private List<Performance> init(EvolutionStrategy evolutionStrategy) {
         ProgramGenerator programGenerator = new ProgramGenerator(programSize);
         List<Program> init = IntStream.range(0, sampleSize)
                 .mapToObj(i -> programGenerator.randomProgram())
                 .collect(Collectors.toList());
-        return EvolutionStrategy.evaluate(init);
+        return evolutionStrategy.evaluate(init);
     }
 }
