@@ -9,7 +9,7 @@ import de.socrates.paramecium.language.NopInstruction;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.SplittableRandom;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -43,7 +43,7 @@ class ProgramGenerator {
     }
 
     Instruction randomStatement() {
-        int element = ThreadLocalRandom.current().nextInt(0, supplierMap.size());
+        int element = new SplittableRandom().nextInt(supplierMap.size());
 
         return supplierMap.get(element).get();
     }
@@ -57,12 +57,12 @@ class ProgramGenerator {
     }
 
     private Instruction randomSimpleStatement() {
-        int element = ThreadLocalRandom.current().nextInt(0, simpleSupplierMap.size());
+        int element = new SplittableRandom().nextInt(simpleSupplierMap.size());
 
         return simpleSupplierMap.get(element).get();
     }
 
     private int randomLineNumber() {
-        return ThreadLocalRandom.current().nextInt(0, programSize);
+        return new SplittableRandom().nextInt(programSize);
     }
 }

@@ -1,8 +1,6 @@
 package de.socrates.paramecium.simulation;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import de.socrates.paramecium.simulation.evolution.TournamentSelectionEvolutionStrategy;
 
 import picocli.CommandLine;
 
@@ -24,18 +22,12 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
-        EvolutionStrategy evolutionStrategy = new EvolutionStrategy(programSize, sampleSize);
+        EvolutionStrategy evolutionStrategy = new TournamentSelectionEvolutionStrategy(sampleSize);
 
+        Population population = Population.create(sampleSize, programSize);
+        population.evolve(maxGeneration, evolutionStrategy);
 
-        List<Performance> ancestors = init(evolutionStrategy);
-        for (int generation = 1; generation <= maxGeneration; generation++) {
-            List<Performance> descendants = evolutionStrategy.evaluate(evolutionStrategy.breed(ancestors));
-
-            ancestors = evolutionStrategy.selection(ancestors, descendants);
-        }
-
-
-        Performance best = ancestors.get(0);
+        Performance best = population.findFittest();
 
         if (renderBest) {
             ProgramRunner.executeProgram(best.getProgram(), renderBest);
@@ -44,11 +36,4 @@ public class Simulation implements Runnable {
         System.out.println(best);
     }
 
-    private List<Performance> init(EvolutionStrategy evolutionStrategy) {
-        ProgramGenerator programGenerator = new ProgramGenerator(programSize);
-        List<Program> init = IntStream.range(0, sampleSize)
-                .mapToObj(i -> programGenerator.randomProgram())
-                .collect(Collectors.toList());
-        return evolutionStrategy.evaluate(init);
-    }
 }
