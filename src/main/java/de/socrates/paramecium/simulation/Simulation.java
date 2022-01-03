@@ -15,7 +15,7 @@ public class Simulation implements Runnable {
     @CommandLine.Parameters
     private int maxGeneration;
 
-    @CommandLine.Option(names = "renderbest")
+    @CommandLine.Option(names = {"--renderbest"})
     private boolean renderBest = false;
 
     public static void main(String[] args) {
@@ -35,7 +35,9 @@ public class Simulation implements Runnable {
 
         Performance best = ancestors.get(0);
 
-        ProgramRunner.executeProgram(best.getProgram(), renderBest);
+        if (renderBest) {
+            ProgramRunner.executeProgram(best.getProgram(), renderBest);
+        }
         System.out.println(best.getProgram());
         System.out.println(best);
     }
