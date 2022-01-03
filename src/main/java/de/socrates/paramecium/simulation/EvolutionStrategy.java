@@ -51,14 +51,14 @@ public class EvolutionStrategy {
         return tournamentSelection(ancestors, descendants);
     }
 
-    private List<Performance> bestSelection(List<Performance> ancestors, List<Performance> descendants) {
+    List<Performance> bestSelection(List<Performance> ancestors, List<Performance> descendants) {
         return Stream.concat(ancestors.stream(), descendants.stream())
                 .sorted(PERFORMANCE_COMPARATOR.reversed())
                 .limit(sampleSize)
                 .collect(Collectors.toList());
     }
 
-    private List<Performance> tournamentSelection(List<Performance> ancestors, List<Performance> descendants) {
+    List<Performance> tournamentSelection(List<Performance> ancestors, List<Performance> descendants) {
         List<Performance> collect = Stream.concat(ancestors.stream(), descendants.stream())
                 .collect(Collectors.toList());
 

@@ -5,6 +5,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
 
@@ -37,13 +38,44 @@ class EvolutionStrategyTest {
                 .report();
     }
 
+    @Disabled
     @Test
     void batchEvaluationTest() {
         EvolutionStrategy evolutionStrategy = new EvolutionStrategy(PROGRAM_SIZE, SAMPLE_SIZE);
-        Timer batchEvaluation = metrics.timer(name(EvolutionStrategy.class, "batchEvaluation"));
+        Timer timer = metrics.timer(name(EvolutionStrategy.class, "batchEvaluation"));
 
-        try (Timer.Context context = batchEvaluation.time()) {
+        try (Timer.Context context = timer.time()) {
             evolutionStrategy.evaluate(init);
+        }
+    }
+
+    @Test
+    void bestSelectionTest() {
+        EvolutionStrategy evolutionStrategy = new EvolutionStrategy(PROGRAM_SIZE, SAMPLE_SIZE / 2);
+        List<Performance> evaluate = evolutionStrategy.evaluate(init);
+
+        List<Performance> ancestors = evaluate.stream().limit(SAMPLE_SIZE / 2).collect(Collectors.toList());
+        List<Performance> descendants = evaluate.stream().skip(SAMPLE_SIZE / 2).collect(Collectors.toList());
+
+        Timer timer = metrics.timer(name(EvolutionStrategy.class, "bestSelection"));
+
+        try (Timer.Context context = timer.time()) {
+            List<Performance> performances = evolutionStrategy.bestSelection(ancestors, descendants);
+        }
+    }
+
+    @Test
+    void tournamentSelectionTest() {
+        EvolutionStrategy evolutionStrategy = new EvolutionStrategy(PROGRAM_SIZE, SAMPLE_SIZE / 2);
+        List<Performance> evaluate = evolutionStrategy.evaluate(init);
+
+        List<Performance> ancestors = evaluate.stream().limit(SAMPLE_SIZE / 2).collect(Collectors.toList());
+        List<Performance> descendants = evaluate.stream().skip(SAMPLE_SIZE / 2).collect(Collectors.toList());
+
+        Timer timer = metrics.timer(name(EvolutionStrategy.class, "tournamentSelection"));
+
+        try (Timer.Context context = timer.time()) {
+            List<Performance> performances = evolutionStrategy.tournamentSelection(ancestors, descendants);
         }
     }
 }
