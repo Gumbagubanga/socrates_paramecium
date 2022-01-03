@@ -1,22 +1,20 @@
 package de.socrates.paramecium.simulation;
 
-import com.codahale.metrics.Timer;
-
 import de.socrates.paramecium.language.Instruction;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.SplittableRandom;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.codahale.metrics.MetricRegistry.name;
 
 public class EvolutionStrategy {
 
@@ -25,39 +23,32 @@ public class EvolutionStrategy {
     private final int programSize;
     private final int sampleSize;
 
-    private final Timer evaluationTimer = Simulation.metrics.timer(name(EvolutionStrategy.class, "evaluation"));
-    private final Timer selectionTimer = Simulation.metrics.timer(name(EvolutionStrategy.class, "selection"));
-
     public EvolutionStrategy(int programSize, int sampleSize) {
         this.programSize = programSize;
         this.sampleSize = sampleSize;
     }
 
     List<Performance> evaluate(List<Program> programs) {
-        try (Timer.Context context = evaluationTimer.time()) {
-            List<Callable<Performance>> collect = programs.stream()
-                    .map(p -> (Callable<Performance>) () -> ProgramRunner.executeProgram(p))
-                    .collect(Collectors.toList());
+        List<Callable<Performance>> collect = programs.stream()
+                .map(p -> (Callable<Performance>) () -> ProgramRunner.executeProgram(p))
+                .collect(Collectors.toList());
 
-            List<Performance> results = new ArrayList<>();
-            try {
-                List<Future<Performance>> futures = EXECUTOR_SERVICE.invokeAll(collect);
-                for (Future<Performance> future : futures) {
-                    Performance performance = future.get();
-                    results.add(performance);
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+        List<Performance> results = new ArrayList<>();
+        try {
+            List<Future<Performance>> futures = EXECUTOR_SERVICE.invokeAll(collect);
+            for (Future<Performance> future : futures) {
+                Performance performance = future.get();
+                results.add(performance);
             }
-
-            return results;
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
+
+        return results;
     }
 
     List<Performance> selection(List<Performance> ancestors, List<Performance> descendants) {
-        try (Timer.Context context = selectionTimer.time()) {
-            return tournamentSelection(ancestors, descendants);
-        }
+        return tournamentSelection(ancestors, descendants);
     }
 
     private List<Performance> bestSelection(List<Performance> ancestors, List<Performance> descendants) {
@@ -68,28 +59,44 @@ public class EvolutionStrategy {
     }
 
     private List<Performance> tournamentSelection(List<Performance> ancestors, List<Performance> descendants) {
-        List<Performance> collect = Stream.concat(ancestors.stream(), descendants.stream()).collect(Collectors.toList());
+        List<Performance> collect = Stream.concat(ancestors.stream(), descendants.stream())
+                .collect(Collectors.toList());
 
-        while (collect.size() > sampleSize) {
-            int i = selectRandomAncestor(collect);
-            int i2 = selectRandomAncestor(collect);
+        Set<Integer> losers = new HashSet<>();
 
-            Performance o1 = collect.get(i);
-            Performance o2 = collect.get(i2);
-            collect.remove(PERFORMANCE_COMPARATOR.compare(o1, o2) <= 0 ? i : i2);
+        while (losers.size() < sampleSize) {
+            int i = selectRandomAncestor(sampleSize * 2);
+            int i2 = selectRandomAncestor(sampleSize * 2);
+
+            if (!losers.contains(i) && !losers.contains(i2)) {
+                Performance o1 = collect.get(i);
+                Performance o2 = collect.get(i2);
+                int e = PERFORMANCE_COMPARATOR.compare(o1, o2) <= 0 ? i : i2;
+                losers.add(e);
+            }
         }
-        return collect;
+
+        List<Performance> result = new ArrayList<>();
+
+        for (int i = 0; i < collect.size(); i++) {
+            if (!losers.contains(i)) {
+                result.add(collect.get(i));
+            }
+        }
+
+        return result;
     }
 
     List<Program> breed(List<Performance> ancestors) {
         List<Program> descendants = new ArrayList<>();
 
         for (Performance ancestor : ancestors) {
-            int index = selectRandomAncestor(ancestors);
+            int index = selectRandomAncestor(ancestors.size());
+            int codeBreak = randomProgramLine();
 
             Program mother = ancestor.getProgram();
             Program father = ancestors.get(index).getProgram();
-            Program descendant = breed(mother, father);
+            Program descendant = breed(mother, father, codeBreak);
 
             descendants.add(descendant);
         }
@@ -97,11 +104,9 @@ public class EvolutionStrategy {
         return descendants;
     }
 
-    private Program breed(Program mother, Program father) {
+    private Program breed(Program mother, Program father, int codeBreak) {
         List<Instruction> motherCode = mother.getCode();
         List<Instruction> fatherCode = father.getCode();
-
-        int codeBreak = randomProgramLine();
 
         List<Instruction> descendant = Stream.concat(
                 motherCode.stream().limit(codeBreak),
@@ -111,11 +116,11 @@ public class EvolutionStrategy {
         return new Program(descendant);
     }
 
-    private static int selectRandomAncestor(List<Performance> ancestors) {
-        return ThreadLocalRandom.current().nextInt(0, ancestors.size());
+    private static int selectRandomAncestor(int size) {
+        return new SplittableRandom().nextInt(size);
     }
 
     private int randomProgramLine() {
-        return ThreadLocalRandom.current().nextInt(0, programSize);
+        return selectRandomAncestor(programSize);
     }
 }

@@ -1,18 +1,12 @@
 package de.socrates.paramecium.simulation;
 
-import com.codahale.metrics.ConsoleReporter;
-import com.codahale.metrics.MetricRegistry;
-
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import picocli.CommandLine;
 
 public class Simulation implements Runnable {
-
-    static final MetricRegistry metrics = new MetricRegistry();
 
     @CommandLine.Parameters
     private int programSize;
@@ -32,11 +26,6 @@ public class Simulation implements Runnable {
     public void run() {
         EvolutionStrategy evolutionStrategy = new EvolutionStrategy(programSize, sampleSize);
 
-        ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
-                .convertRatesTo(TimeUnit.SECONDS)
-                .convertDurationsTo(TimeUnit.MILLISECONDS)
-                .build();
-        reporter.start(5, TimeUnit.SECONDS);
 
         List<Performance> ancestors = init(evolutionStrategy);
         for (int generation = 1; generation <= maxGeneration; generation++) {
@@ -45,7 +34,6 @@ public class Simulation implements Runnable {
             ancestors = evolutionStrategy.selection(ancestors, descendants);
         }
 
-        reporter.stop();
 
         Performance best = ancestors.get(0);
 
