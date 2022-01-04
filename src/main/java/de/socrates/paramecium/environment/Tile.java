@@ -1,7 +1,5 @@
 package de.socrates.paramecium.environment;
 
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.SplittableRandom;
 
 public enum Tile {
@@ -22,11 +20,15 @@ public enum Tile {
     }
 
     public static Tile parse(char ascii) {
-        Optional<Tile> first = Arrays.stream(values()).filter(e -> e.ascii == ascii).findFirst();
-        try {
-            return first.orElseThrow();
-        } catch (Exception e) {
-            return null;
+        switch (ascii) {
+            case ' ':
+                return EMPTY;
+            case '.':
+                return FOOD;
+            case 'x':
+                return WALL;
+            default:
+                throw new UnsupportedOperationException();
         }
     }
 
