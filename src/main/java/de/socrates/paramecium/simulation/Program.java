@@ -26,7 +26,7 @@ public class Program {
     }
 
     Instruction read(int line) {
-        return code.stream().skip(line).findFirst().orElse(null);
+        return code.get(line);
     }
 
     Program mate(Program father) {
