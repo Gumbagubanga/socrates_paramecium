@@ -5,14 +5,12 @@ import de.socrates.paramecium.language.Instruction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SplittableRandom;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Program {
 
-    private final String id;
     private final List<Instruction> code;
 
     Program() {
@@ -20,7 +18,6 @@ public class Program {
     }
 
     Program(List<Instruction> code) {
-        this.id = UUID.randomUUID().toString();
         this.code = code;
     }
 
@@ -43,14 +40,10 @@ public class Program {
         return new Program(descendant);
     }
 
-    String getId() {
-        return id;
-    }
-
     @Override
     public String toString() {
         return IntStream.range(0, code.size())
-                .mapToObj(i -> String.format("%2d %s", i, code.get(i).toString()))
+                .mapToObj(i -> String.format("%2d %s", i, code.get(i)))
                 .collect(Collectors.joining("\n"));
     }
 }
