@@ -10,7 +10,6 @@ import de.socrates.paramecium.simulation.evolution.TournamentSelectionEvolutionS
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
 
 import java.util.List;
@@ -34,7 +33,7 @@ class EvolutionStrategyTest {
     }
 
     @Disabled
-    @Test
+    @RepeatedTest(10)
     void batchEvaluationTest() {
         Population population = Population.create(SAMPLE_SIZE, PROGRAM_SIZE);
 
@@ -44,7 +43,7 @@ class EvolutionStrategyTest {
     }
 
     @Disabled
-    @Test
+    @RepeatedTest(10)
     void breedTest() {
         Population population = Population.create(SAMPLE_SIZE, PROGRAM_SIZE);
 
@@ -64,7 +63,6 @@ class EvolutionStrategyTest {
         }
     }
 
-    @Disabled
     @RepeatedTest(10)
     void tournamentSelectionTest() {
         List<Performance> performances = Population.create(SAMPLE_SIZE, PROGRAM_SIZE).breed().evaluate();

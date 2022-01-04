@@ -39,15 +39,18 @@ public class Population {
     }
 
     public Population breed() {
-        SplittableRandom splittableRandom = new SplittableRandom();
-
-        List<Program> descendants = IntStream.range(0, individuals.size())
-                .mapToObj(i -> splittableRandom
-                        .ints(2, 0, individuals.size())
-                        .mapToObj(individuals::get)
-                        .reduce(Program::mate)
-                        .orElseThrow())
+        int size = individuals.size();
+        List<Program> collect = new SplittableRandom().ints(size * 2L, 0, size)
+                .mapToObj(individuals::get)
                 .collect(Collectors.toList());
+
+        List<Program> descendants = new ArrayList<>();
+        for (int i = 0; i < size; i = i + 2) {
+            Program mother = collect.get(i);
+            Program father = collect.get(i + 1);
+            Program child = mother.mate(father);
+            descendants.add(child);
+        }
 
         individuals.addAll(descendants);
 
@@ -82,7 +85,4 @@ public class Population {
         return results;
     }
 
-    public List<Program> individuals() {
-        return individuals;
-    }
 }
