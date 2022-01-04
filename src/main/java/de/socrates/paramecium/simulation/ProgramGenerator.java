@@ -18,7 +18,6 @@ class ProgramGenerator {
 
     private final int programSize;
     private final Map<Integer, Supplier<Instruction>> supplierMap;
-    private final Map<Integer, Supplier<Instruction>> simpleSupplierMap;
 
     ProgramGenerator(int programSize) {
         this.programSize = programSize;
@@ -28,10 +27,6 @@ class ProgramGenerator {
                 2, MoveInstruction::random,
                 3, this::generateGotoStatement,
                 4, this::generateIfClause);
-        this.simpleSupplierMap = Map.of(
-                0, NopInstruction::new,
-                1, EatInstruction::new,
-                2, MoveInstruction::random);
     }
 
     Program randomProgram() {
@@ -42,10 +37,14 @@ class ProgramGenerator {
         return new Program(code);
     }
 
-    Instruction randomStatement() {
+    private Instruction randomStatement() {
         int element = new SplittableRandom().nextInt(supplierMap.size());
 
         return supplierMap.get(element).get();
+    }
+
+    private int randomLineNumber() {
+        return new SplittableRandom().nextInt(programSize);
     }
 
     private Instruction generateGotoStatement() {
@@ -53,16 +52,6 @@ class ProgramGenerator {
     }
 
     private Instruction generateIfClause() {
-        return IfClause.random(randomSimpleStatement());
-    }
-
-    private Instruction randomSimpleStatement() {
-        int element = new SplittableRandom().nextInt(simpleSupplierMap.size());
-
-        return simpleSupplierMap.get(element).get();
-    }
-
-    private int randomLineNumber() {
-        return new SplittableRandom().nextInt(programSize);
+        return IfClause.random((GotoInstruction) generateGotoStatement());
     }
 }

@@ -7,16 +7,16 @@ import de.socrates.paramecium.environment.Tile;
 public class IfClause implements Instruction {
     private final Direction direction;
     private final Tile sense;
-    private final Instruction statement;
+    private final GotoInstruction statement;
 
-    public IfClause(Direction direction, Tile sense, Instruction statement) {
+    public IfClause(Direction direction, Tile sense, GotoInstruction statement) {
         this.direction = direction;
         this.sense = sense;
         this.statement = statement;
     }
 
-    public static Instruction random(Instruction randomSimpleStatement) {
-        return new IfClause(Direction.random(), Tile.random(), randomSimpleStatement);
+    public static Instruction random(GotoInstruction gotoInstruction) {
+        return new IfClause(Direction.random(), Tile.random(), gotoInstruction);
     }
 
     @Override
