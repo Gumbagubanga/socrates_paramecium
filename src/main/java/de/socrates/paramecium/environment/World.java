@@ -1,7 +1,5 @@
 package de.socrates.paramecium.environment;
 
-import java.util.Map;
-
 public class World {
 
     private int xPosition;
@@ -68,19 +66,23 @@ public class World {
     }
 
     void move(Direction direction) {
-        Map<Direction, Runnable> movement = Map.of(
-                Direction.NORTH, this::moveNorth,
-                Direction.WEST, this::moveWest,
-                Direction.SOUTH, this::moveSouth,
-                Direction.EAST, this::moveEast
-        );
-
         if (whatIs(direction) != Tile.WALL) {
-            movement.entrySet().stream()
-                    .filter(e -> e.getKey() == direction)
-                    .map(Map.Entry::getValue)
-                    .findFirst()
-                    .ifPresent(Runnable::run);
+            switch (direction) {
+                case SOUTH:
+                    moveSouth();
+                    break;
+                case WEST:
+                    moveWest();
+                    break;
+                case EAST:
+                    moveEast();
+                    break;
+                case NORTH:
+                    moveNorth();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
