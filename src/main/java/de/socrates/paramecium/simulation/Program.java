@@ -26,6 +26,10 @@ public class Program {
     }
 
     Instruction read(int line) {
+        if (line >= code.size()) {
+            return null;
+        }
+
         return code.get(line);
     }
 

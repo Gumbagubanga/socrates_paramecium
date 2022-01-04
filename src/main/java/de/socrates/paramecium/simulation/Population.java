@@ -39,13 +39,13 @@ public class Population {
     }
 
     public Population breed() {
-        int size = individuals.size();
-        List<Program> collect = new SplittableRandom().ints(size * 2L, 0, size)
+        List<Program> collect = new SplittableRandom()
+                .ints(individuals.size() * 2L, 0, individuals.size())
                 .mapToObj(individuals::get)
                 .collect(Collectors.toList());
 
         List<Program> descendants = new ArrayList<>();
-        for (int i = 0; i < size; i = i + 2) {
+        for (int i = 0; i < collect.size(); i = i + 2) {
             Program mother = collect.get(i);
             Program father = collect.get(i + 1);
             Program child = mother.mate(father);
