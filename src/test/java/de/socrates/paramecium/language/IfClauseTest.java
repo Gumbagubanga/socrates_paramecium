@@ -11,8 +11,14 @@ import org.junit.platform.commons.annotation.Testable;
 class IfClauseTest {
 
     @Test
-    void if_empty() {
+    void if_eq_goto() {
         Assertions.assertEquals("if(sense(SOUTH) == EMPTY) then goto(10)",
-                new IfClause(Direction.SOUTH, Tile.EMPTY, new GotoInstruction(10)).toString());
+                new IfClause(Direction.SOUTH, CompareOperator.EQUAL, Tile.EMPTY, new GotoInstruction(10)).toString());
+    }
+
+    @Test
+    void if_neq_goto() {
+        Assertions.assertEquals("if(sense(SOUTH) != EMPTY) then goto(10)",
+                new IfClause(Direction.SOUTH, CompareOperator.NOT_EQUAL, Tile.EMPTY, new GotoInstruction(10)).toString());
     }
 }

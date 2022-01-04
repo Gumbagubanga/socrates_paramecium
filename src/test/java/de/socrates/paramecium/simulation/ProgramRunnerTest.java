@@ -4,6 +4,7 @@ import de.socrates.paramecium.environment.Direction;
 import de.socrates.paramecium.environment.Paramecium;
 import de.socrates.paramecium.environment.Tile;
 import de.socrates.paramecium.environment.World;
+import de.socrates.paramecium.language.CompareOperator;
 import de.socrates.paramecium.language.EatInstruction;
 import de.socrates.paramecium.language.GotoInstruction;
 import de.socrates.paramecium.language.IfClause;
@@ -62,7 +63,7 @@ class ProgramRunnerTest {
     @Test
     void if_false_nop() {
         Program program = new Program();
-        program.write(new IfClause(Direction.IN_PLACE, Tile.EMPTY, new GotoInstruction(0)));
+        program.write(new IfClause(Direction.IN_PLACE, CompareOperator.EQUAL, Tile.EMPTY, new GotoInstruction(0)));
 
         World world = World.generate();
 
@@ -77,7 +78,7 @@ class ProgramRunnerTest {
     @Test
     void if_true_nop() {
         Program program = new Program();
-        program.write(new IfClause(Direction.IN_PLACE, Tile.FOOD, new GotoInstruction(0)));
+        program.write(new IfClause(Direction.IN_PLACE, CompareOperator.EQUAL, Tile.FOOD, new GotoInstruction(0)));
 
         World world = World.generate();
 
