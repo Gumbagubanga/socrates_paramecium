@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.SplittableRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class Program {
 
@@ -36,10 +35,9 @@ public class Program {
     Program mate(Program father) {
         int codeBreak = new SplittableRandom().nextInt(code.size());
 
-        List<Instruction> descendant = Stream.concat(
-                code.stream().limit(codeBreak),
-                father.code.stream().skip(codeBreak)
-        ).collect(Collectors.toList());
+        List<Instruction> descendant = new ArrayList<>(code.size());
+        descendant.addAll(code.subList(0, codeBreak));
+        descendant.addAll(father.code.subList(codeBreak, father.code.size()));
 
         return new Program(descendant);
     }

@@ -2,14 +2,12 @@ package de.socrates.paramecium.simulation.evolution;
 
 import de.socrates.paramecium.simulation.EvolutionStrategy;
 import de.socrates.paramecium.simulation.Performance;
-import de.socrates.paramecium.simulation.Program;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SplittableRandom;
-import java.util.stream.Collectors;
 
 public class TournamentSelectionEvolutionStrategy implements EvolutionStrategy {
 
@@ -20,11 +18,11 @@ public class TournamentSelectionEvolutionStrategy implements EvolutionStrategy {
     }
 
     @Override
-    public List<Program> selection(List<Performance> performances) {
+    public List<Performance> selection(List<Performance> performances) {
         int size = performances.size();
 
         if (size <= sampleSize) {
-            return performances.stream().map(Performance::getProgram).collect(Collectors.toList());
+            return performances;
         }
 
         Set<Integer> losers = new HashSet<>();
@@ -42,11 +40,11 @@ public class TournamentSelectionEvolutionStrategy implements EvolutionStrategy {
             }
         }
 
-        List<Program> result = new ArrayList<>();
+        List<Performance> result = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {
             if (!losers.contains(i)) {
-                result.add(performances.get(i).getProgram());
+                result.add(performances.get(i));
             }
         }
 

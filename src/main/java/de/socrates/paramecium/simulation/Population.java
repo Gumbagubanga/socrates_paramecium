@@ -4,21 +4,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.SplittableRandom;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Population {
 
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newWorkStealingPool();
+    private List<Performance> individuals;
 
-    private List<Program> individuals;
-
-    private Population(List<Program> individuals) {
+    private Population(List<Performance> individuals) {
         this.individuals = individuals;
     }
 
@@ -27,21 +20,28 @@ public class Population {
         List<Program> individuals = IntStream.range(0, sampleSize)
                 .mapToObj(i -> programGenerator.randomProgram())
                 .collect(Collectors.toList());
-        return new Population(individuals);
+        return new Population(evaluate(individuals));
     }
 
     public void evolve(int maxGeneration, EvolutionStrategy evolutionStrategy) {
         for (int generation = 1; generation <= maxGeneration; generation++) {
-            breed();
+            List<Program> descendants = breed();
 
-            individuals = evolutionStrategy.selection(this);
+            List<Performance> evaluate = evaluate(descendants);
+
+            List<Performance> testGroup = new ArrayList<>();
+            testGroup.addAll(individuals);
+            testGroup.addAll(evaluate);
+
+            individuals = evolutionStrategy.selection(testGroup);
         }
     }
 
-    public Population breed() {
+    public List<Program> breed() {
         List<Program> collect = new SplittableRandom()
                 .ints(individuals.size() * 2L, 0, individuals.size())
                 .mapToObj(individuals::get)
+                .map(Performance::getProgram)
                 .collect(Collectors.toList());
 
         List<Program> descendants = new ArrayList<>();
@@ -52,37 +52,25 @@ public class Population {
             descendants.add(child);
         }
 
-        individuals.addAll(descendants);
-
-        return this;
+        return descendants;
     }
 
     public Performance findFittest() {
-        List<Performance> results = evaluate();
-
-        return results.stream()
+        return individuals.stream()
                 .sorted(Comparator.comparing(Performance::getTicks).reversed())
                 .limit(1)
                 .findFirst()
                 .orElseThrow();
     }
 
-    public List<Performance> evaluate() {
-        List<Callable<Performance>> collect = individuals.stream()
-                .map(p -> (Callable<Performance>) () -> ProgramRunner.executeProgram(p))
+    public static List<Performance> evaluate(List<Program> individuals) {
+        return individuals.stream()
+                .parallel()
+                .map(ProgramRunner::executeProgram)
                 .collect(Collectors.toList());
-
-        List<Performance> results = new ArrayList<>();
-        try {
-            List<Future<Performance>> futures = EXECUTOR_SERVICE.invokeAll(collect);
-            for (Future<Performance> future : futures) {
-                Performance performance = future.get();
-                results.add(performance);
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return results;
     }
 
+    public List<Program> individuals() {
+        return individuals.stream().map(Performance::getProgram).collect(Collectors.toList());
+    }
 }
