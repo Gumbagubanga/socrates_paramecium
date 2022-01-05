@@ -48,8 +48,8 @@ public class Population {
         for (int i = 0; i < collect.size(); i = i + 2) {
             Program mother = collect.get(i);
             Program father = collect.get(i + 1);
-            Program child = mother.mate(father);
-            descendants.add(child);
+            descendants.add(mother.mate(father));
+            descendants.add(father.mate(mother));
         }
 
         return descendants;

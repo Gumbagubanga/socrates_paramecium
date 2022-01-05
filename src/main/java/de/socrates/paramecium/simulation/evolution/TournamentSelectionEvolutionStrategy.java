@@ -28,7 +28,7 @@ public class TournamentSelectionEvolutionStrategy implements EvolutionStrategy {
         Set<Integer> losers = new HashSet<>();
 
         SplittableRandom splittableRandom = new SplittableRandom();
-        while (losers.size() < sampleSize) {
+        while (size - losers.size() > sampleSize) {
             int i1 = splittableRandom.nextInt(size);
             int i2 = splittableRandom.nextInt(size);
 

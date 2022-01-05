@@ -2,7 +2,6 @@ package de.socrates.paramecium.simulation.evolution;
 
 import de.socrates.paramecium.simulation.EvolutionStrategy;
 import de.socrates.paramecium.simulation.Performance;
-import de.socrates.paramecium.simulation.Program;
 
 import java.util.Comparator;
 import java.util.List;
@@ -16,11 +15,10 @@ public class BestSelectEvolutionStrategy implements EvolutionStrategy {
     }
 
     @Override
-    public List<Program> selection(List<Performance> performances) {
+    public List<Performance> selection(List<Performance> performances) {
         return performances.stream()
                 .sorted(Comparator.comparing(Performance::getTicks).reversed())
                 .limit(sampleSize)
-                .map(Performance::getProgram)
                 .collect(Collectors.toList());
     }
 }
