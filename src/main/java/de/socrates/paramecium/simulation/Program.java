@@ -32,8 +32,14 @@ public class Program {
         return code.get(line);
     }
 
-    public Program mate(Program partner) {
-        int codeBreak = new SplittableRandom().nextInt(code.size());
+    public Program mate(Program partner, int codeBreak) {
+        if (codeBreak == code.size()) {
+            return this;
+        }
+
+        if (codeBreak == 0) {
+            return partner;
+        }
 
         List<Instruction> top = code.subList(0, codeBreak);
         List<Instruction> bottom = partner.code.subList(codeBreak, partner.code.size());

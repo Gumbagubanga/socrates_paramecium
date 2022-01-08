@@ -61,17 +61,16 @@ public class Evolution {
     }
 
     public List<Program> breed(List<Program> individuals) {
-        List<Program> mates = splittableRandom
-                .ints(individuals.size() * 2L, 0, individuals.size())
-                .mapToObj(individuals::get)
-                .collect(Collectors.toList());
+        List<Program> descendants = new ArrayList<>(sampleSize);
 
-        List<Program> descendants = new ArrayList<>();
-        for (int i = 0; i < mates.size(); i = i + 2) {
-            Program mother = mates.get(i);
-            Program father = mates.get(i + 1);
-            descendants.add(mother.mate(father));
-            descendants.add(father.mate(mother));
+        while (descendants.size() < sampleSize) {
+            int motherIndex = splittableRandom.nextInt(individuals.size());
+            int fatherIndex = splittableRandom.nextInt(individuals.size());
+
+            Program mother = individuals.get(motherIndex);
+            Program father = individuals.get(fatherIndex);
+
+            descendants.add(mother.mate(father, splittableRandom.nextInt(programSize)));
         }
 
         return descendants;
