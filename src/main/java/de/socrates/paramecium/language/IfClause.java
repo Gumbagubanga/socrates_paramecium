@@ -25,9 +25,9 @@ public class IfClause implements Instruction {
     public void execute(Paramecium paramecium) {
         if (compareOperator.eval(paramecium.sense(direction), sense)) {
             statement.execute(paramecium);
+        } else {
+            paramecium.exhaust(1);
         }
-
-        paramecium.exhaust(1);
     }
 
     @Override
