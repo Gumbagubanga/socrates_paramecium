@@ -12,12 +12,12 @@ import java.util.SplittableRandom;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-class ProgramGenerator {
+public class ProgramGenerator {
 
     private final int programSize;
     private final List<Supplier<Instruction>> instructionSupplier;
 
-    ProgramGenerator(int programSize) {
+    public ProgramGenerator(int programSize) {
         this.programSize = programSize;
         this.instructionSupplier = List.of(
                 NopInstruction::new,
@@ -44,5 +44,10 @@ class ProgramGenerator {
 
     private Instruction generateIfClause() {
         return IfClause.random((GotoInstruction) generateGotoStatement());
+    }
+
+    public Instruction randomLine() {
+        int instructionIndex = new SplittableRandom().nextInt(0, instructionSupplier.size());
+        return instructionSupplier.get(instructionIndex).get();
     }
 }

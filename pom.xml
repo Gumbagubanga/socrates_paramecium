@@ -81,7 +81,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <mainClass>de.socrates.paramecium.simulation.Simulation</mainClass>
+                            <mainClass>de.socrates.paramecium.Simulation</mainClass>
                             <buildArgs>
                                 <buildArg>--no-fallback</buildArg>
                             </buildArgs>

@@ -25,7 +25,7 @@ class ProgramTest {
         program.write(new NopInstruction());
 
         Assertions.assertEquals(
-                String.format(" 0 %s\n 1 %s", ((Instruction) new NopInstruction()).toString(), ((Instruction) new NopInstruction()).toString()),
+                String.format("00 %s\n01 %s\n", new NopInstruction(), new NopInstruction()),
                 program.toString());
     }
 

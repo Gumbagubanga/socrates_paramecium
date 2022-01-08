@@ -32,20 +32,34 @@ public class Program {
         return code.get(line);
     }
 
-    Program mate(Program father) {
+    public Program mate(Program partner) {
         int codeBreak = new SplittableRandom().nextInt(code.size());
 
-        List<Instruction> descendant = new ArrayList<>(code.size());
-        descendant.addAll(code.subList(0, codeBreak));
-        descendant.addAll(father.code.subList(codeBreak, father.code.size()));
+        List<Instruction> top = code.subList(0, codeBreak);
+        List<Instruction> bottom = partner.code.subList(codeBreak, partner.code.size());
 
+        List<Instruction> descendant = new ArrayList<>(top.size() + bottom.size());
+        descendant.addAll(top);
+        descendant.addAll(bottom);
         return new Program(descendant);
+    }
+
+    public Program mutate(int mutationRate, ProgramGenerator programGenerator) {
+        SplittableRandom splittableRandom = new SplittableRandom();
+        int bound = 100 / mutationRate;
+
+        List<Instruction> mutation = new ArrayList<>(code);
+        IntStream.range(0, mutation.size())
+                .filter(i -> splittableRandom.nextInt(bound) == 0)
+                .forEach(i -> mutation.set(i, programGenerator.randomLine()));
+
+        return new Program(mutation);
     }
 
     @Override
     public String toString() {
         return IntStream.range(0, code.size())
-                .mapToObj(i -> String.format("%2d %s", i, code.get(i)))
-                .collect(Collectors.joining("\n"));
+                .mapToObj(i -> String.format("%02d %s", i, code.get(i)))
+                .collect(Collectors.joining("\n", "", "\n"));
     }
 }
