@@ -16,8 +16,9 @@ public class ProgramGenerator {
 
     private final int programSize;
     private final List<Supplier<Instruction>> instructionSupplier;
+    private final SplittableRandom splittableRandom;
 
-    public ProgramGenerator(int programSize) {
+    public ProgramGenerator(int programSize, SplittableRandom splittableRandom) {
         this.programSize = programSize;
         this.instructionSupplier = List.of(
                 NopInstruction::new,
@@ -25,10 +26,11 @@ public class ProgramGenerator {
                 MoveInstruction::random,
                 this::generateGotoStatement,
                 this::generateIfClause);
+        this.splittableRandom = splittableRandom;
     }
 
     Program randomProgram() {
-        List<Instruction> code = new SplittableRandom()
+        List<Instruction> code = splittableRandom
                 .ints(programSize, 0, instructionSupplier.size())
                 .mapToObj(instructionSupplier::get)
                 .map(Supplier::get)
@@ -38,7 +40,7 @@ public class ProgramGenerator {
     }
 
     private Instruction generateGotoStatement() {
-        int line = new SplittableRandom().nextInt(programSize);
+        int line = splittableRandom.nextInt(programSize);
         return new GotoInstruction(line);
     }
 
@@ -47,7 +49,7 @@ public class ProgramGenerator {
     }
 
     public Instruction randomLine() {
-        int instructionIndex = new SplittableRandom().nextInt(0, instructionSupplier.size());
+        int instructionIndex = splittableRandom.nextInt(0, instructionSupplier.size());
         return instructionSupplier.get(instructionIndex).get();
     }
 }

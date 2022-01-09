@@ -28,7 +28,7 @@ public class Evolution {
     }
 
     public void evolve() {
-        ProgramGenerator programGenerator = new ProgramGenerator(programSize);
+        ProgramGenerator programGenerator = new ProgramGenerator(programSize, splittableRandom);
 
         List<Program> ancestors = IntStream.range(0, sampleSize)
                 .mapToObj(i -> programGenerator.randomProgram())
@@ -50,28 +50,32 @@ public class Evolution {
     }
 
     public List<Program> mutate(List<Program> ancestors, ProgramGenerator programGenerator) {
-        List<Program> result = ancestors;
         if (mutationRate > 0) {
-            result = ancestors.stream()
+            ancestors.stream()
                     .parallel()
-                    .map(p -> p.mutate(mutationRate, programGenerator))
-                    .collect(Collectors.toList());
+                    .forEach(p -> p.mutate(mutationRate, programGenerator, splittableRandom));
         }
 
-        return result;
+        return ancestors;
     }
 
     public List<Program> breed(List<Program> individuals) {
         List<Program> descendants = new ArrayList<>(sampleSize);
 
         while (descendants.size() < sampleSize) {
-            int motherIndex = splittableRandom.nextInt(individuals.size());
-            int fatherIndex = splittableRandom.nextInt(individuals.size());
+            int codeBreak = splittableRandom.nextInt(programSize);
 
-            Program mother = individuals.get(motherIndex);
-            Program father = individuals.get(fatherIndex);
+            if (codeBreak != 0 && codeBreak != programSize) {
+                int motherIndex = splittableRandom.nextInt(individuals.size());
+                int fatherIndex = splittableRandom.nextInt(individuals.size());
 
-            descendants.add(mother.mate(father, splittableRandom.nextInt(programSize)));
+                if (motherIndex != fatherIndex) {
+                    Program mother = individuals.get(motherIndex);
+                    Program father = individuals.get(fatherIndex);
+
+                    descendants.add(mother.mate(father, codeBreak));
+                }
+            }
         }
 
         return descendants;

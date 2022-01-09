@@ -33,14 +33,6 @@ public class Program {
     }
 
     public Program mate(Program partner, int codeBreak) {
-        if (codeBreak == code.size()) {
-            return this;
-        }
-
-        if (codeBreak == 0) {
-            return partner;
-        }
-
         List<Instruction> top = code.subList(0, codeBreak);
         List<Instruction> bottom = partner.code.subList(codeBreak, partner.code.size());
 
@@ -50,12 +42,9 @@ public class Program {
         return new Program(descendant);
     }
 
-    public Program mutate(int mutationRate, ProgramGenerator programGenerator) {
-        SplittableRandom splittableRandom = new SplittableRandom();
-        int bound = 100 / mutationRate;
-
+    public Program mutate(int mutationRate, ProgramGenerator programGenerator, SplittableRandom splittableRandom) {
         IntStream.range(0, code.size())
-                .filter(i -> splittableRandom.nextInt(bound) == 0)
+                .filter(i -> splittableRandom.nextInt(mutationRate) == 0)
                 .forEach(i -> code.set(i, programGenerator.randomLine()));
 
         return this;
