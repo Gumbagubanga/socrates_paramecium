@@ -54,12 +54,11 @@ public class Program {
         SplittableRandom splittableRandom = new SplittableRandom();
         int bound = 100 / mutationRate;
 
-        List<Instruction> mutation = new ArrayList<>(code);
-        IntStream.range(0, mutation.size())
+        IntStream.range(0, code.size())
                 .filter(i -> splittableRandom.nextInt(bound) == 0)
-                .forEach(i -> mutation.set(i, programGenerator.randomLine()));
+                .forEach(i -> code.set(i, programGenerator.randomLine()));
 
-        return new Program(mutation);
+        return this;
     }
 
     @Override
