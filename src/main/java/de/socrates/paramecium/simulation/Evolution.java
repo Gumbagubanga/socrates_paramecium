@@ -1,6 +1,7 @@
 package de.socrates.paramecium.simulation;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.SplittableRandom;
@@ -104,6 +105,7 @@ public class Evolution {
         return performances.stream()
                 .parallel()
                 .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(Performance::getTicks).reversed())
                 .collect(Collectors.toList());
     }
 

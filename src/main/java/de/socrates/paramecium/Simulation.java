@@ -8,6 +8,8 @@ import picocli.CommandLine;
 public class Simulation implements Runnable {
 
     @CommandLine.Parameters
+    private int mutationRate;
+    @CommandLine.Parameters
     private int programSize;
     @CommandLine.Parameters
     private int sampleSize;
@@ -16,9 +18,6 @@ public class Simulation implements Runnable {
 
     @CommandLine.Option(names = {"--renderbest"}, defaultValue = "true")
     private boolean renderBest;
-
-    @CommandLine.Option(names = {"--mutationrate"}, defaultValue = "0")
-    private int mutationRate;
 
     public static void main(String[] args) {
         System.exit(new CommandLine(new Simulation()).execute(args));
