@@ -14,10 +14,12 @@ public class Paramecium {
         return health > 0;
     }
 
-    public void eat(int energy) {
-        if (world.takeFood()) {
+    public boolean eat(int energy) {
+        boolean foodFound = world.takeFood();
+        if (foodFound) {
             health += energy;
         }
+        return foodFound;
     }
 
     public void exhaust(int energy) {
